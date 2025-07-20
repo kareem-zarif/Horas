@@ -1,0 +1,6 @@
+Dtos
+-AllDtos inherit from CreateDto
+
+Filtering 
+-Can filter in memory / in database 
+-Can make Pagination for coming Data 

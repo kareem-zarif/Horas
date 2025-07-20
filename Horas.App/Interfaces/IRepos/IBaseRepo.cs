@@ -1,6 +1,3 @@
-﻿namespace Horas.Domain.Interfaces.IRepos
+﻿public class IBaseRepo
 {
-    internal class IBaseRepo
-    {
-    }
 }
