@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 ##to ignore connectionSting :: Kareem
-Horas.MVC/appsettings.Development.json
+Horas.Api/appsettings.Development.json
 
 # User-specific files
 *.rsuser
