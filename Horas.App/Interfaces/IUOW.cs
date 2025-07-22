@@ -2,8 +2,10 @@
 
 namespace Horas.Domain.Interfaces
 {
-    public interface IUOW
+    public interface IUOW : IDisposable
     {
         public IProductRepo PrdouctRepository { get; }
+
+        Task<int> Complete();
     }
 }

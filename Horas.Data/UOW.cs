@@ -26,5 +26,16 @@ namespace Horas.Data
 
         //get property => make repo instance when only called 
         public IProductRepo PrdouctRepository => _productRepo ??= new ProductRepo(_context);
+
+
+
+        public async Task<int> Complete()
+        {
+            return await _context.SaveChangesAsync();
+        }
+        public void Dispose() //call GC finalizer and prevent derived classes to call it again
+        {
+            _context.Dispose();
+        }
     }
 }
