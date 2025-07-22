@@ -15,8 +15,9 @@ namespace Horas.Api.Dtos.Product
         public int NoINStock { get; set; }
         public int MinNumToFactoryOrder { get; set; }
         public ProductApprovalStatus ApprovalStatus { get; set; } = ProductApprovalStatus.Pending;
-        [Required, MaxLength(100)]
-        public IList<string> ProductPicsPathes { get; set; } = new List<string>();
+
+        public List<IFormFile> Images { get; set; }
+
         //extra details 
         public int? WarrantyNMonths { get; set; }
         public ShippingTypes Shipping { get; set; } = ShippingTypes.None;

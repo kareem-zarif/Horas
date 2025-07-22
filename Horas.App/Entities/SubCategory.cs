@@ -8,7 +8,7 @@
         public Guid CategoryId { get; set; }
         //nav 
         public virtual Category Category { get; set; }
-        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
+        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>(); 
 
     }
 }
