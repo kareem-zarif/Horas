@@ -1,0 +1,18 @@
+Nav In Dtos
+-Nav in Dtos Not Make Reference Cycly propblem as it not part of dbcontext as Entities 
+-but it bad for performance to brinf Nav in Dto with all Nav properties that contains other navs
+-So Choose what do u need only from Nav as Dept_Name , Studs_Count
+
+-UOW => Can use simpe way
+	public interface IUOW
+{
+    ICategoryRepo CategoryRepo { get; }
+    IProductRepo ProductRepo { get; }
+    Task<int> SaveChangesAsync();
+}
+public class UOW : IUOW
+{
+    public ICategoryRepo CategoryRepo { get; }
+    public IProductRepo ProductRepo { get; }
+    // ...
+}

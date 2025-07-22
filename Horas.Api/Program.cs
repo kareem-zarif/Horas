@@ -1,4 +1,4 @@
-
+using Horas.Data.IOC;
 namespace Horas.Api
 {
     public class Program
@@ -8,6 +8,8 @@ namespace Horas.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.ConfigData(builder.Configuration);
+            builder.Services.AddAutoMapper(op => op.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
