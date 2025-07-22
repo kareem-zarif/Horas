@@ -1,9 +1,26 @@
-﻿namespace Horas.Api.Dtos.Product
+﻿using System.ComponentModel.DataAnnotations;
+using Horas.Domain;
+
+namespace Horas.Api.Dtos.Product
 {
-    public class ProductResDto : ProductCreateDto
+    public class ProductResDto
     {
         public Guid Id { get; set; }
         public int? Rating { get; set; }
         public string[]? SupplierNames { get; set; }
+        public IList<string> ProductPicsPathes { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public double PricePerPiece { get; set; }
+        public double? PricePer50Piece { get; set; }
+        public double? PricePer100Piece { get; set; }
+        public int NoINStock { get; set; }
+        public int MinNumToFactoryOrder { get; set; }
+        public ProductApprovalStatus ApprovalStatus { get; set; } = ProductApprovalStatus.Pending;
+
+        // extra details 
+        public int? WarrantyNMonths { get; set; }
+        public ShippingTypes Shipping { get; set; } = ShippingTypes.None;
+        public Guid SubCategoryId { get; set; }
     }
 }

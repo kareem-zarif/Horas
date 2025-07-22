@@ -19,6 +19,7 @@ namespace Horas.Data
         #endregion
         private readonly HorasDBContext _context;
         private IProductRepo _productRepo;
+        private ISubCategoryRepo _subCategoryRepo;
         public UOW(HorasDBContext context)
         {
             _context = context;
@@ -26,6 +27,7 @@ namespace Horas.Data
 
         //get property => make repo instance when only called 
         public IProductRepo PrdouctRepository => _productRepo ??= new ProductRepo(_context);
+        public ISubCategoryRepo SubCategoryRepository => _subCategoryRepo ??= new SubCategoryRepo(_context);
 
 
 
