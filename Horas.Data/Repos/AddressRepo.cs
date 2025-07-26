@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Horas.Domain.Interfaces.IRepos;
-
+﻿
 namespace Horas.Data.Repos
 {
     public class AddressRepo : BaseRepo<Address>, IAddressRepo

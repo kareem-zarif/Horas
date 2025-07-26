@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using Horas.Api.Dtos.Address;
-using Horas.Api.Dtos.ProductSupplier;
-using Horas.Domain.Entities;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+﻿
 
 namespace Horas.Api.Controllers
 {

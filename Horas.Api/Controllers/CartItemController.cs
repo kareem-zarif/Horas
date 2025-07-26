@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Horas.Api.Dtos.CartItem;
-using Horas.Domain;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-
+﻿
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]

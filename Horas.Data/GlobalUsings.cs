@@ -1,5 +1,10 @@
-﻿global using Horas.Domain;
+﻿global using System.Linq.Expressions;
+global using Horas.Domain;
+global using Horas.Domain.Entities;
+global using Horas.Domain.Interfaces.IRepos;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
-global using System.Linq.Expressions;
-
+global using Horas.Data.Repos;
+global using Horas.Domain.Interfaces;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

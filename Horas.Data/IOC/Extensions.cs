@@ -1,8 +1,4 @@
-﻿using Horas.Data.Repos;
-using Horas.Domain.Interfaces;
-using Horas.Domain.Interfaces.IRepos;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿
 
 namespace Horas.Data.IOC
 {

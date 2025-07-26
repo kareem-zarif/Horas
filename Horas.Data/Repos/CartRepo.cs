@@ -1,6 +1,4 @@
-﻿using Horas.Domain.Interfaces.IRepos;
-
-namespace Horas.Data.Repos
+﻿namespace Horas.Data.Repos
 {
     public class CartRepo : BaseRepo<Cart>, ICartRepo
     {

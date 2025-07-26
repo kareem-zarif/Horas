@@ -1,6 +1,4 @@
-﻿using Horas.Domain.Entities;
-
-namespace Horas.Domain
+﻿namespace Horas.Domain
 {
     public class Supplier : Person
     {
