@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Horas.Api.Dtos.SubCategory
+﻿namespace Horas.Api.Dtos.SubCategory
 {
     public class SubCategoryUpdateDto 
     {

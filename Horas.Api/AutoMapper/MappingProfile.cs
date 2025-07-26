@@ -1,15 +1,4 @@
-﻿using AutoMapper;
-using Horas.Api.Dtos.Address;
-using Horas.Api.Dtos.Cart;
-using Horas.Api.Dtos.CartItem;
-using Horas.Api.Dtos.Product;
-using Horas.Api.Dtos.ProductSupplier;
-using Horas.Api.Dtos.SubCategory;
-using Horas.Api.Dtos.Supplier;
-using Horas.Domain;
-using Horas.Domain.Entities;
-
-namespace Horas.Api.AutoMapper
+﻿namespace Horas.Api.AutoMapper
 {
     public class MappingProfile : Profile
     {

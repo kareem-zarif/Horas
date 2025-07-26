@@ -1,6 +1,4 @@
-﻿using Horas.Api.Dtos.ProductSupplier;
-
-namespace Horas.Api.Dtos.Supplier
+﻿namespace Horas.Api.Dtos.Supplier
 {
     public class SupplierResDto
     {

@@ -8,3 +8,5 @@ global using Horas.Data.Repos;
 global using Horas.Domain.Interfaces;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using System.Reflection;
+

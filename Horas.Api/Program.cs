@@ -1,5 +1,4 @@
-using System.Text.Json.Serialization;
-using Horas.Data.IOC;
+
 namespace Horas.Api
 {
     public class Program

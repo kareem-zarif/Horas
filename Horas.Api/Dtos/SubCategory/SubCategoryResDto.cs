@@ -1,6 +1,4 @@
-﻿using Horas.Api.Dtos.Product;
-
-namespace Horas.Api.Dtos.SubCategory
+﻿namespace Horas.Api.Dtos.SubCategory
 {
     public class SubCategoryResDto 
     {

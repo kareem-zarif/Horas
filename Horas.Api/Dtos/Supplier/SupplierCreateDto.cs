@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Horas.Api.Dtos.Supplier
+﻿namespace Horas.Api.Dtos.Supplier
 {
     public class SupplierCreateDto
     {

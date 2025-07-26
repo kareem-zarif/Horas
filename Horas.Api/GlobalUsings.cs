@@ -10,3 +10,6 @@ global using Horas.Api.Dtos.Product;
 global using Horas.Api.Dtos.ProductSupplier;
 global using Horas.Domain.Entities;
 global using Horas.Api.Dtos.Supplier;
+global using System.ComponentModel.DataAnnotations;
+global using System.Text.Json.Serialization;
+global using Horas.Data.IOC;

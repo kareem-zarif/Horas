@@ -1,6 +1,4 @@
-﻿using Horas.Api.Dtos.CartItem;
-
-namespace Horas.Api.Dtos.Cart
+﻿namespace Horas.Api.Dtos.Cart
 {
     public class CartUpdateDto
     {

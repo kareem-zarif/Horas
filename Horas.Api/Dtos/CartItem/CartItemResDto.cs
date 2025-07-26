@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Horas.Api.Dtos.CartItem
+﻿namespace Horas.Api.Dtos.CartItem
 {
     public class CartItemResDto
     {

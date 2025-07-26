@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Horas.Domain.Entities;
-
+﻿
 namespace Horas.Data
 {
     public class HorasDBContext : DbContext
