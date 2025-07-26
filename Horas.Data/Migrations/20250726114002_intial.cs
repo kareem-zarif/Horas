@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class CreatingEntitiesWithConfigs : Migration
+    public partial class intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -385,24 +385,30 @@ namespace Horas.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductSupplier",
+                name: "ProductSuppliers",
                 columns: table => new
                 {
-                    ProductsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SuppliersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsExist = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductSupplier", x => new { x.ProductsId, x.SuppliersId });
+                    table.PrimaryKey("PK_ProductSuppliers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductSupplier_Persons_SuppliersId",
-                        column: x => x.SuppliersId,
+                        name: "FK_ProductSuppliers_Persons_SupplierId",
+                        column: x => x.SupplierId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductSupplier_Products_ProductsId",
-                        column: x => x.ProductsId,
+                        name: "FK_ProductSuppliers_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -594,9 +600,15 @@ namespace Horas.Data.Migrations
                 column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductSupplier_SuppliersId",
-                table: "ProductSupplier",
-                column: "SuppliersId");
+                name: "IX_ProductSuppliers_ProductId_SupplierId",
+                table: "ProductSuppliers",
+                columns: new[] { "ProductId", "SupplierId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSuppliers_SupplierId",
+                table: "ProductSuppliers",
+                column: "SupplierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductWishlist_WishlistsId",
@@ -657,7 +669,7 @@ namespace Horas.Data.Migrations
                 name: "OrderStatusHistories");
 
             migrationBuilder.DropTable(
-                name: "ProductSupplier");
+                name: "ProductSuppliers");
 
             migrationBuilder.DropTable(
                 name: "ProductWishlist");

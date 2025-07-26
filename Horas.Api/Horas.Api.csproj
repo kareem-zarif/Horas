@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Horas.App\Horas.Domain.csproj" />
     <ProjectReference Include="..\Horas.Data\Horas.Data.csproj" />
   </ItemGroup>
 

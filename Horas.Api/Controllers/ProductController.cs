@@ -24,7 +24,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var foundList = await _uow.PrdouctRepository.GetAllAsync();
+                var foundList = await _uow.PrdouctRepository.GetAllAsyncInclude();
                 if (foundList == null)
                     return NotFound();
 
@@ -47,7 +47,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var found = await _uow.PrdouctRepository.GetAsync(id);
+                var found = await _uow.PrdouctRepository.GetAsyncInclude(id);
 
                 if (found == null)
                     return NotFound();

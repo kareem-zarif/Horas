@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Horas.Data.IOC;
 namespace Horas.Api
 {
@@ -11,7 +12,11 @@ namespace Horas.Api
             builder.Services.ConfigData(builder.Configuration);
             builder.Services.AddAutoMapper(op => op.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen();

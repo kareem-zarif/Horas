@@ -1,4 +1,6 @@
-﻿namespace Horas.Domain
+﻿using Horas.Domain.Entities;
+
+namespace Horas.Domain
 {
     public class Product : BaseEnt
     {
@@ -17,7 +19,7 @@
         public Guid SubCategoryId { get; set; }
         //nav
         public virtual SubCategory SubCategory { get; set; }
-        public virtual ICollection<Supplier> Suppliers { get; set; } = new HashSet<Supplier>();
+        public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; } = new HashSet<ProductSupplier>();
         public virtual ICollection<CartItem> CartItems { get; set; } = new HashSet<CartItem>();
         public virtual ICollection<Wishlist> Wishlists { get; set; } = new HashSet<Wishlist>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();

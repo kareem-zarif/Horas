@@ -11,7 +11,7 @@ namespace Horas.Data.Repos
 
         protected override IQueryable<SubCategory> IncludeNavProperties(DbSet<SubCategory> NavProperty)
         {
-            return _dbset.Include(x => x.Category);
+            return _dbset.Include(x => x.Category).Include(x => x.Products);
         }
     }
 }

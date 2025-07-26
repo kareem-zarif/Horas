@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Horas.Domain.Entities;
 
 namespace Horas.Data
 {
@@ -57,6 +58,7 @@ namespace Horas.Data
         public virtual DbSet<SubCategory> SubCategories { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<ProductSupplier> ProductSuppliers { get; set; }
 
 
     }
