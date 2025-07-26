@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Horas.Api.Dtos.SubCategory;
-using Horas.Domain;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-
+﻿
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -24,7 +19,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var foundList = await _uow.SubCategoryRepository.GetAllAsync();
+                var foundList = await _uow.SubCategoryRepository.GetAllAsyncInclude();
 
                 if (foundList == null)
                     return NotFound();
@@ -48,7 +43,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var found = await _uow.SubCategoryRepository.GetAsync(id);
+                var found = await _uow.SubCategoryRepository.GetAsyncInclude(id);
 
                 if (found == null)
                     return NotFound();
@@ -68,58 +63,44 @@ namespace Horas.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(SubCategoryCreateDto requestDto)
+        public async Task<ActionResult> Create([FromForm]SubCategoryCreateDto requestDto)
         {
-            if (requestDto == null)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var found = _mapper.Map<SubCategory>(requestDto);
+
+            if (found == null)
                 return BadRequest();
 
-            try
-            {
-                var subCategory = _mapper.Map<SubCategory>(requestDto);
+            await _uow.SubCategoryRepository.CreateAsync(found);
+            await _uow.Complete();
 
-                if (subCategory == null)
-                    return BadRequest();
+            var mapped = _mapper.Map<SubCategoryResDto>(found);
 
-                await _uow.SubCategoryRepository.CreateAsync(subCategory);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<SubCategoryResDto>(subCategory);
-
-                return CreatedAtAction(nameof(GetSubCategories), new { id = subCategory.Id }, mapped);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return CreatedAtAction(nameof(GetSubCategory), new { id = mapped.Id }, mapped);
         }
 
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, SubCategoryUpdateDto requestDto)
+        public async Task<IActionResult> Update([FromForm] Guid id, [FromForm] SubCategoryUpdateDto requestDto)
         {
-            if (requestDto == null || id != requestDto.Id)
-                return BadRequest();
-            try
-            {
-                var subCategory = await _uow.SubCategoryRepository.GetAsync(id);
+            if (!ModelState.IsValid || id != requestDto.Id)
+                return BadRequest(ModelState);
 
-                if (subCategory == null)
-                    return NotFound();
+            var subCategory = await _uow.SubCategoryRepository.GetAsyncInclude(id);
 
-                subCategory.Name = requestDto.Name;
-                subCategory.Description = requestDto.Description;
-                subCategory.CategoryId = requestDto.CategoryId;
+            if (subCategory == null)
+                return NotFound();
 
-                    await _uow.SubCategoryRepository.UpdateAsync(subCategory);
-                await _uow.Complete();
+            var mappedCategory = _mapper.Map<SubCategory>(subCategory);
 
-                var mapped = _mapper.Map<SubCategoryResDto>(subCategory);
+            await _uow.SubCategoryRepository.UpdateAsync(mappedCategory);
+            await _uow.Complete();
 
-                return Ok(mapped);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var mapped = _mapper.Map<SubCategoryResDto>(mappedCategory);
+            return Ok(mapped);
+
 
             //==================================================================================
 
@@ -160,7 +141,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var subCategory = await _uow.SubCategoryRepository.GetAsync(id);
+                var subCategory = await _uow.SubCategoryRepository.GetAsyncInclude(id);
 
                 if (subCategory == null)
                     return NotFound();

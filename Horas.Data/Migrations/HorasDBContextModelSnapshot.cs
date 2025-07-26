@@ -327,6 +327,43 @@ namespace Horas.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Horas.Domain.Entities.ProductSupplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsExist")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasIndex("ProductId", "SupplierId")
+                        .IsUnique();
+
+                    b.ToTable("ProductSuppliers");
+                });
+
             modelBuilder.Entity("Horas.Domain.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -803,9 +840,6 @@ namespace Horas.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PrdoductId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
@@ -891,21 +925,6 @@ namespace Horas.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Wishlists");
-                });
-
-            modelBuilder.Entity("ProductSupplier", b =>
-                {
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SuppliersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ProductsId", "SuppliersId");
-
-                    b.HasIndex("SuppliersId");
-
-                    b.ToTable("ProductSupplier");
                 });
 
             modelBuilder.Entity("ProductWishlist", b =>
@@ -1071,6 +1090,25 @@ namespace Horas.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Horas.Domain.Entities.ProductSupplier", b =>
+                {
+                    b.HasOne("Horas.Domain.Product", "Product")
+                        .WithMany("ProductSuppliers")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Horas.Domain.Supplier", "Supplier")
+                        .WithMany("ProductSuppliers")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Supplier");
+                });
+
             modelBuilder.Entity("Horas.Domain.Message", b =>
                 {
                     b.HasOne("Horas.Domain.Customer", "Customer")
@@ -1213,21 +1251,6 @@ namespace Horas.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("ProductSupplier", b =>
-                {
-                    b.HasOne("Horas.Domain.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Horas.Domain.Supplier", null)
-                        .WithMany()
-                        .HasForeignKey("SuppliersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ProductWishlist", b =>
                 {
                     b.HasOne("Horas.Domain.Product", null)
@@ -1276,6 +1299,8 @@ namespace Horas.Data.Migrations
 
                     b.Navigation("OrderItems");
 
+                    b.Navigation("ProductSuppliers");
+
                     b.Navigation("Reviews");
                 });
 
@@ -1306,6 +1331,8 @@ namespace Horas.Data.Migrations
             modelBuilder.Entity("Horas.Domain.Supplier", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("ProductSuppliers");
 
                     b.Navigation("Reports");
                 });

@@ -1,8 +1,3 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.VisualStudio.Services.UserAccountMapping;
-using System.Data;
-using System.Reflection;
 
 namespace Horas.Data
 {
@@ -75,6 +70,7 @@ namespace Horas.Data
         public virtual DbSet<SubCategory> SubCategories { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<ProductSupplier> ProductSuppliers { get; set; }
 
 
     }
