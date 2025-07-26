@@ -1,4 +1,6 @@
+
 ﻿namespace Horas.Api.AutoMapper
+
 {
     public class MappingProfile : Profile
     {
@@ -10,10 +12,12 @@
 
             CreateMap<ProductUpdateDto, Product>().ReverseMap();
 
+
             CreateMap<Product, ProductResDto>()
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Reviews != null && src.Reviews.Any()
                     ? src.Reviews.Sum(x => x.Rating) / (src.Reviews.Count) : 0))
                 .ReverseMap();
+
             #endregion
 
 
