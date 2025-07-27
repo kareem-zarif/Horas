@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Horas.Domain;
-
-namespace Horas.Api.Dtos.SubCategory
+﻿namespace Horas.Api.Dtos.SubCategory
 {
     public class SubCategoryCreateDto
     {

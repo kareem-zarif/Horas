@@ -2,4 +2,8 @@
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using System.Linq.Expressions;
-
+global using Horas.Data.Repos;
+global using Horas.Domain.Entities;
+global using Horas.Domain.Interfaces;
+global using Horas.Domain.Interfaces.IRepos;
+global using System.Reflection;

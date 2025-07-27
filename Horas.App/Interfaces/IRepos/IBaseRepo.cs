@@ -1,6 +1,4 @@
-﻿using Horas.Domain;
-using System.Linq.Expressions;
-
+﻿
 public interface IBaseRepo<TEntity> where TEntity : BaseEnt
 {
     Task<TEntity> GetAsync(Guid id);

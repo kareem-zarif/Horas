@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    [Migration("20250705204317_Creating-Entities-With-Configs")]
-    partial class CreatingEntitiesWithConfigs
+    [Migration("20250725164900_menna")]
+    partial class menna
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -199,6 +199,43 @@ namespace Horas.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Horas.Domain.Entities.ProductWishList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsExist")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WishListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WishListId");
+
+                    b.HasIndex("ProductId", "WishListId")
+                        .IsUnique();
+
+                    b.ToTable("ProductWishLists");
+                });
+
             modelBuilder.Entity("Horas.Domain.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -337,7 +374,7 @@ namespace Horas.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("OrderId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductId")
@@ -744,21 +781,6 @@ namespace Horas.Data.Migrations
                     b.ToTable("ProductSupplier");
                 });
 
-            modelBuilder.Entity("ProductWishlist", b =>
-                {
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("WishlistsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ProductsId", "WishlistsId");
-
-                    b.HasIndex("WishlistsId");
-
-                    b.ToTable("ProductWishlist");
-                });
-
             modelBuilder.Entity("Horas.Domain.Customer", b =>
                 {
                     b.HasBaseType("Horas.Domain.Person");
@@ -856,6 +878,25 @@ namespace Horas.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Horas.Domain.Entities.ProductWishList", b =>
+                {
+                    b.HasOne("Horas.Domain.Product", "Product")
+                        .WithMany("ProductWishLists")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Horas.Domain.Wishlist", "WishList")
+                        .WithMany("ProductWishLists")
+                        .HasForeignKey("WishListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("WishList");
+                });
+
             modelBuilder.Entity("Horas.Domain.Message", b =>
                 {
                     b.HasOne("Horas.Domain.Customer", "Customer")
@@ -894,7 +935,9 @@ namespace Horas.Data.Migrations
                 {
                     b.HasOne("Horas.Domain.Order", "Order")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Horas.Domain.Product", "Product")
                         .WithMany("OrderItems")
@@ -1013,21 +1056,6 @@ namespace Horas.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductWishlist", b =>
-                {
-                    b.HasOne("Horas.Domain.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Horas.Domain.Wishlist", null)
-                        .WithMany()
-                        .HasForeignKey("WishlistsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Horas.Domain.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -1061,12 +1089,19 @@ namespace Horas.Data.Migrations
 
                     b.Navigation("OrderItems");
 
+                    b.Navigation("ProductWishLists");
+
                     b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Horas.Domain.SubCategory", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Horas.Domain.Wishlist", b =>
+                {
+                    b.Navigation("ProductWishLists");
                 });
 
             modelBuilder.Entity("Horas.Domain.Customer", b =>

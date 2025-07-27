@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class CreatingEntitiesWithConfigs : Migration
+    public partial class menna : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -409,24 +409,30 @@ namespace Horas.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductWishlist",
+                name: "ProductWishLists",
                 columns: table => new
                 {
-                    ProductsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    WishlistsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WishListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsExist = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductWishlist", x => new { x.ProductsId, x.WishlistsId });
+                    table.PrimaryKey("PK_ProductWishLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductWishlist_Products_ProductsId",
-                        column: x => x.ProductsId,
+                        name: "FK_ProductWishLists_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductWishlist_Wishlists_WishlistsId",
-                        column: x => x.WishlistsId,
+                        name: "FK_ProductWishLists_Wishlists_WishListId",
+                        column: x => x.WishListId,
                         principalTable: "Wishlists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -474,7 +480,7 @@ namespace Horas.Data.Migrations
                     UnitPrice = table.Column<double>(type: "float", nullable: false),
                     IsSample = table.Column<bool>(type: "bit", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -488,7 +494,8 @@ namespace Horas.Data.Migrations
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
@@ -599,9 +606,15 @@ namespace Horas.Data.Migrations
                 column: "SuppliersId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductWishlist_WishlistsId",
-                table: "ProductWishlist",
-                column: "WishlistsId");
+                name: "IX_ProductWishLists_ProductId_WishListId",
+                table: "ProductWishLists",
+                columns: new[] { "ProductId", "WishListId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductWishLists_WishListId",
+                table: "ProductWishLists",
+                column: "WishListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_CustomerId",
@@ -660,7 +673,7 @@ namespace Horas.Data.Migrations
                 name: "ProductSupplier");
 
             migrationBuilder.DropTable(
-                name: "ProductWishlist");
+                name: "ProductWishLists");
 
             migrationBuilder.DropTable(
                 name: "Reports");

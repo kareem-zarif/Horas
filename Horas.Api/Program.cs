@@ -1,4 +1,3 @@
-using Horas.Data.IOC;
 namespace Horas.Api
 {
     public class Program
