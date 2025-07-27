@@ -94,7 +94,7 @@ namespace Horas.Api.Controllers
                 }
             }
 
-            var created = await _uow.PrdouctRepository.CreateAsync(product);
+            var created = await _uow.ProductRepository.CreateAsync(product);
             int saved = await _uow.Complete();
             if (saved > 0)
             {
@@ -141,7 +141,7 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var found = await _uow.PrdouctRepository.GetAsync(requestDto.Id);
+            var found = await _uow.ProductRepository.GetAsync(requestDto.Id);
 
             _mapper.Map(requestDto, found);
 
@@ -174,7 +174,7 @@ namespace Horas.Api.Controllers
                 found.ProductPicsPathes.Add($"/uploads/{uniqueFileName}");
             }
 
-            var updated = await _uow.PrdouctRepository.UpdateAsync(found);
+            var updated = await _uow.ProductRepository.UpdateAsync(found);
             int saved = await _uow.Complete();
             if (saved > 0)
             {
@@ -213,7 +213,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var found = await _uow.PrdouctRepository.GetAsync(id);
+                var found = await _uow.ProductRepository.GetAsync(id);
 
                 if (found == null)
                     return NotFound("Product not found");
@@ -231,7 +231,7 @@ namespace Horas.Api.Controllers
                     }
                 }
 
-                var deleted = await _uow.PrdouctRepository.DeleteAsync(id);
+                var deleted = await _uow.ProductRepository.DeleteAsync(id);
 
                 int saved = await _uow.Complete();
                 if (saved > 0)
