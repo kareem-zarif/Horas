@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿
 
 #nullable disable
 
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class CreatingEntitiesWithConfigs : Migration
+    public partial class kareem : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -440,7 +439,6 @@ namespace Horas.Data.Migrations
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PrdoductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),

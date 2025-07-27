@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    [Migration("20250705204317_Creating-Entities-With-Configs")]
-    partial class CreatingEntitiesWithConfigs
+    [Migration("20250726192503_kareem")]
+    partial class kareem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -638,9 +638,6 @@ namespace Horas.Data.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PrdoductId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");

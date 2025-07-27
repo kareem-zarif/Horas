@@ -1,4 +1,4 @@
-﻿using Horas.Domain.Interfaces.IRepos;
+﻿
 
 namespace Horas.Data.Repos
 {
