@@ -1,0 +1,14 @@
+﻿namespace Horas.Api.Dtos.Supplier
+{
+    public class SupplierResDto
+    {
+        public Guid Id { get; set; }
+        public string UserName { get; set; }
+        public string Phone { get; set; }
+        public string FactoryName { get; set; }
+        public string Description { get; set; }
+        public string State { get; set; }
+        public string City { get; set; }
+        public List<ProductSupplierResDto> ProductSuppliers { get; set; }
+    }
+}

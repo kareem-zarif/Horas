@@ -1,11 +1,10 @@
-﻿
-
-namespace Horas.Api.Dtos.Cart
+﻿namespace Horas.Api.Dtos.Cart
 {
     public class CartResDto
     {
-      public Guid id { set; get; }
+        public Guid Id { get; set; }
+        public Guid CustomerId { get; set; }
+        public ICollection<CartItemResDto> CartItems { get; set; }
 
-        public List<CartItemResDto> CartItems { get; set; } = new();
     }
 }

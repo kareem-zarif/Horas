@@ -1,5 +1,3 @@
-
-
 namespace Horas.Api.Controllers
 {
     [ApiController]
@@ -31,3 +29,4 @@ namespace Horas.Api.Controllers
         }
     }
 }
+

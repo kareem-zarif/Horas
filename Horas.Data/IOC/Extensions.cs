@@ -1,5 +1,3 @@
-﻿
-
 namespace Horas.Data.IOC
 {
     public static class Extensions
@@ -19,8 +17,13 @@ namespace Horas.Data.IOC
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<ISubCategoryRepo, SubCategoryRepo>();
             services.AddScoped<ICustomerRepo,CustomerRepo>();
-            services.AddScoped<IUOW, UOW>();
+            services.AddScoped<ICartRepo, CartRepo>();
+            services.AddScoped<ICartItemRepo, CartItemRepo>();
+            services.AddScoped<ISupplierRepo, SupplierRepo>();
+            services.AddScoped<IAddressRepo, AddressRepo>();
+            services.AddScoped<IProductSupplierRepo, ProductSupplierRepo>();
 
+            services.AddScoped<IUOW, UOW>();
 
             return services;
         }
