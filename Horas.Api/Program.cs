@@ -1,4 +1,3 @@
-
 namespace Horas.Api
 {
     public class Program
