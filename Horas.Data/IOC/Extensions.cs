@@ -1,8 +1,4 @@
-﻿using Horas.Data.Repos;
-using Horas.Domain.Interfaces;
-using Horas.Domain.Interfaces.IRepos;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿
 
 namespace Horas.Data.IOC
 {
@@ -17,6 +13,11 @@ namespace Horas.Data.IOC
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>)); ////resolve and inject all repo automatically when create dbcontext
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<ISubCategoryRepo, SubCategoryRepo>();
+            services.AddScoped<ICartRepo, CartRepo>();
+            services.AddScoped<ICartItemRepo, CartItemRepo>();
+            services.AddScoped<ISupplierRepo, SupplierRepo>();
+            services.AddScoped<IAddressRepo, AddressRepo>();
+            services.AddScoped<IProductSupplierRepo, ProductSupplierRepo>();
 
             services.AddScoped<IUOW, UOW>();
 

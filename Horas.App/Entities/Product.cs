@@ -19,7 +19,7 @@ namespace Horas.Domain
         public Guid SubCategoryId { get; set; }
         //nav
         public virtual SubCategory SubCategory { get; set; }
-        public virtual ICollection<Supplier> Suppliers { get; set; } = new HashSet<Supplier>();
+        public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; } = new HashSet<ProductSupplier>();
         public virtual ICollection<CartItem> CartItems { get; set; } = new HashSet<CartItem>();
         public virtual ICollection<ProductWishList> ProductWishLists { get; set; } = new HashSet<ProductWishList>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
