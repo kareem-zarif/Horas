@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Horas.Domain
+﻿namespace Horas.Domain
 {
     public class CartItem : BaseEnt
     {

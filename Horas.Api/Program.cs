@@ -1,16 +1,3 @@
-using Horas.Data;
-using Horas.Data.DataAccess;
-using Horas.Data.IOC;
-using Horas.Data.Services;
-using Horas.Domain;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Threading.Tasks;
 namespace Horas.Api
 {
     public class Program
@@ -22,6 +9,8 @@ namespace Horas.Api
             // Add services to the container.
             builder.Services.ConfigData(builder.Configuration);
             builder.Services.AddAutoMapper(op => op.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
+
+      
 
             #region Auth
 
@@ -47,17 +36,11 @@ namespace Horas.Api
 
             builder.Services.AddAuthorization();
 
-
-
-
             #endregion
 
 
-
-
-
-
             builder.Services.AddControllers();
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen();
