@@ -1,6 +1,6 @@
 ﻿namespace Horas.Api.Dtos.SubCategory
 {
-    public class SubCategoryUpdateDto 
+    public class SubCategoryUpdateDto
     {
         public Guid Id { get; set; }
         [Required]

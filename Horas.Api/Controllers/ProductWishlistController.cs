@@ -1,4 +1,5 @@
-﻿
+﻿using Horas.Data.Repos;
+
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -38,7 +39,7 @@ namespace Horas.Api.Controllers
             {
                 var ProductWish = await _uow.ProductWishListRepository.GetAsyncInclude(id);
 
-                if (ProductWish == null )
+                if (ProductWish == null)
                     return NotFound();
 
                 var dto = _mapper.Map<ProductWishlistResDto>(ProductWish);
@@ -57,9 +58,6 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (dto == null)
-                return BadRequest();
-
             try
             {
                 var ProducWish = _mapper.Map<ProductWishList>(dto);
@@ -67,12 +65,15 @@ namespace Horas.Api.Controllers
                 if (ProducWish == null)
                     return BadRequest();
 
-                await _uow.ProductWishListRepository.CreateAsync(ProducWish);
-                await _uow.Complete();
+                var created = await _uow.ProductWishListRepository.CreateAsync(ProducWish);
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<ProductWishList>(created);
+                    return Ok(mapped);
+                }
+                else return BadRequest();
 
-                var mapped = _mapper.Map<ProductWishlistCreateDto>(ProducWish);
-
-                return Content("Wishlist Added Successfully");
             }
             catch (Exception ex)
             {
@@ -91,21 +92,16 @@ namespace Horas.Api.Controllers
             if (ProductWish == null)
                 return NotFound();
 
-            _mapper.Map(dto, ProductWish);
-
-            await _uow.ProductWishListRepository.UpdateAsync(ProductWish);
+            var updated = await _uow.ProductWishListRepository.UpdateAsyncInclude(ProductWish);
 
             int saved = await _uow.Complete();
             if (saved > 0)
             {
-                var result = _mapper.Map<ProductWishlistResDto>(ProductWish);
+                var result = _mapper.Map<ProductWishlistResDto>(updated);
                 return Ok(result);
             }
             else
-            {
                 return BadRequest("No changes were saved.");
-            }
-
         }
 
         [HttpDelete("{id}")]
@@ -118,10 +114,14 @@ namespace Horas.Api.Controllers
                 if (wishlist == null)
                     return NotFound("Wishlist not found.");
 
-                await _uow.ProductWishListRepository.DeleteAsync(id);
-                await _uow.Complete();
-
-                return Ok("Wishlist deleted successfully.");
+                var deleted = await _uow.ProductWishListRepository.DeleteAsync(id);
+                var saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<ProductWishListRepo>(deleted);
+                    return Ok(mapped);
+                }
+                return BadRequest();
             }
             catch (Exception ex)
             {

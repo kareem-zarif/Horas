@@ -8,7 +8,7 @@ namespace Horas.Data.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<ProductWishList> builder)
         {
-            builder.HasKey(x => x.Id); // Keep Id from BaseEnt for auditing
+            builder.HasKey(x => x.Id); // Keep Id from IBaseEnt for auditing
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.HasIndex(x => new { x.ProductId, x.WishListId }).IsUnique();
             builder.HasQueryFilter(x => x.IsExist);

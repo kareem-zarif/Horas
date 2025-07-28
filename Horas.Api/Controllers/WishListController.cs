@@ -20,11 +20,11 @@ namespace Horas.Api.Controllers
                 var wishlists = await _uow.WishListRepository.GetAllAsyncInclude();
 
                 if (wishlists == null || !wishlists.Any())
-                    return NotFound(); 
+                    return NotFound();
 
-                var dto = _mapper.Map<IEnumerable<WishListResDto>>(wishlists);
+                var mapped = _mapper.Map<IEnumerable<WishListResDto>>(wishlists);
 
-                return Ok(dto);
+                return Ok(mapped);
             }
             catch (Exception ex)
             {
@@ -64,10 +64,14 @@ namespace Horas.Api.Controllers
                 if (wishlist == null)
                     return NotFound("Wishlist not found.");
 
-                await _uow.WishListRepository.DeleteAsync(id);
-                await _uow.Complete();
-
-                return Ok("Wishlist deleted successfully.");
+                var deleted = await _uow.WishListRepository.DeleteAsync(id);
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<WishListResDto>(deleted);
+                    return Ok(mapped);
+                }
+                else return BadRequest();
             }
             catch (Exception ex)
             {
@@ -85,24 +89,21 @@ namespace Horas.Api.Controllers
             if (dto == null)
                 return BadRequest();
 
-            try
+            var wishlist = _mapper.Map<Wishlist>(dto);
+
+            if (wishlist == null)
+                return NotFound();
+
+            var created = await _uow.WishListRepository.CreateAsync(wishlist);
+
+            int saved = await _uow.Complete();
+            if (saved > 0)
             {
-                var wishlist = _mapper.Map<Wishlist>(dto);
-
-                if (wishlist == null)
-                    return BadRequest();
-
-                await _uow.WishListRepository.CreateAsync(wishlist);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<WishListResDto>(wishlist);
-
-                return Content("Wishlist Added Successfully");
+                var mapped = _mapper.Map<WishListResDto>(created);
+                return Ok(mapped);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            else
+                return BadRequest();
         }
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateWishlistDto dto)
@@ -110,20 +111,19 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var wishlist = await _uow.WishListRepository.GetAsyncInclude(dto.Id);
+            var old = await _uow.WishListRepository.GetAsyncInclude(dto.Id);
 
-            if (wishlist == null)
+            if (old == null)
                 return NotFound();
 
-            _mapper.Map(dto, wishlist);
-
-            await _uow.WishListRepository.UpdateAsync(wishlist);
+            var toUpdate = _mapper.Map<Wishlist>(dto);
+            var updated = await _uow.WishListRepository.UpdateAsync(toUpdate);
 
             int saved = await _uow.Complete();
             if (saved > 0)
             {
-                var result = _mapper.Map<WishListResDto>(wishlist);
-                return Ok(result);
+                var mapped = _mapper.Map<WishListResDto>(updated);
+                return Ok(mapped);
             }
             else
             {
@@ -131,6 +131,6 @@ namespace Horas.Api.Controllers
             }
         }
 
-    
-}
+
+    }
 }

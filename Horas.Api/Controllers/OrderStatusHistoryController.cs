@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,28 +19,17 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (requestDto == null)
-                return BadRequest();
+            var mappedGo = _mapper.Map<OrderStatusHistory>(requestDto);
 
-            try
+            var created = await _uow.OrderStatusHistoryRepository.CreateAsync(mappedGo);
+            int saved = await _uow.Complete();
+            if (saved > 0)
             {
-                var orderSHis = _mapper.Map<OrderStatusHistory>(requestDto);
-                orderSHis.ChangedAt = DateTime.UtcNow;
-
-                if (orderSHis == null)
-                    return BadRequest();
-
-                await _uow.OrderStatusHistoryRepository.CreateAsync(orderSHis);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<OrderStatusHistoryResDto>(orderSHis);
-
+                var mapped = _mapper.Map<OrderStatusHistoryResDto>(mappedGo);
                 return Ok(mapped);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            else return BadRequest();
+
         }
         [HttpGet]
         public async Task<ActionResult> GetOrders()
@@ -54,9 +42,6 @@ namespace Horas.Api.Controllers
                     return NotFound();
 
                 var mapped = _mapper.Map<IEnumerable<OrderStatusHistoryResDto>>(foundList);
-
-                if (mapped == null)
-                    return NotFound();
 
                 return Ok(mapped);
             }
@@ -78,9 +63,6 @@ namespace Horas.Api.Controllers
 
                 var mapped = _mapper.Map<OrderStatusHistoryResDto>(found);
 
-                if (mapped == null)
-                    return NotFound();
-
                 return Ok(mapped);
             }
             catch (Exception ex)
@@ -100,11 +82,15 @@ namespace Horas.Api.Controllers
                 if (orderSHis == null)
                     return NotFound();
 
-                await _uow.OrderStatusHistoryRepository.DeleteAsync(id);
+                var deleted = await _uow.OrderStatusHistoryRepository.DeleteAsync(id);
 
-                await _uow.Complete();
-                return NoContent();
-
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<OrderStatusHistoryResDto>(deleted);
+                    return Ok(mapped);
+                }
+                else return BadRequest();
             }
             catch (Exception msg)
             {
@@ -124,20 +110,17 @@ namespace Horas.Api.Controllers
             if (orderSHis == null)
                 return NotFound();
 
-            _mapper.Map(dto, orderSHis);
-
-            await _uow.OrderStatusHistoryRepository.UpdateAsync(orderSHis);
+            var mappedGo = _mapper.Map<OrderStatusHistory>(dto);
+            var updated = await _uow.OrderStatusHistoryRepository.UpdateAsync(mappedGo);
 
             int saved = await _uow.Complete();
             if (saved > 0)
             {
-                var result = _mapper.Map<OrderStatusHistoryResDto>(orderSHis);
+                var result = _mapper.Map<OrderStatusHistoryResDto>(updated);
                 return Ok(result);
             }
             else
-            {
                 return BadRequest("No changes were saved.");
-            }
         }
 
     }

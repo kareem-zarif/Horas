@@ -86,13 +86,13 @@
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromForm] AddressUpdateDto requestDto)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] AddressUpdateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var found = await _uow.AddressRepository.GetAsyncInclude(id);
+            var found = await _uow.AddressRepository.GetAsyncInclude(requestDto.Id);
 
             if (found == null)
                 return NotFound();
@@ -122,7 +122,7 @@
                 if (found == null)
                     return NotFound();
 
-                var deleted = await _uow.AddressRepository.DeleteAsync(id);
+                var deleted = await _uow.AddressRepository.DeleteAsyncInclude(id);
 
                 var saved = await _uow.Complete();
                 if (saved > 0)

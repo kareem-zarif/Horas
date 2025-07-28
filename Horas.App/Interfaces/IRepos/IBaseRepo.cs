@@ -1,5 +1,4 @@
-
-﻿public interface IBaseRepo<TEntity> where TEntity : BaseEnt
+﻿public interface IBaseRepo<TEntity> where TEntity : IBaseEnt
 {
     Task<TEntity> GetAsync(Guid id);
     #region IEnumerable,Expression

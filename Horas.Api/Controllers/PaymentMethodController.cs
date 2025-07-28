@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -26,7 +25,8 @@ namespace Horas.Api.Controllers
 
             if (saved > 0)
             {
-                return Content("Payment Added Successfully.");
+                var mapped = _mapper.Map<PaymentMethodResDto>(created);
+                return Ok(mapped);
 
             }
             else
@@ -64,9 +64,6 @@ namespace Horas.Api.Controllers
                     return NotFound();
 
                 var dtos = _mapper.Map<IEnumerable<PaymentMethodResDto>>(paymentMethods);
-
-                if (dtos == null || !dtos.Any())
-                    return NotFound();
                 return Ok(dtos);
 
             }
@@ -81,20 +78,21 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                //don't forget to write the code to make sure that the payment method is related to order
 
-                var paymentMethod = await _uow.PaymentMethodRepository.GetAsyncInclude(id);
+                var paymentMethod = await _uow.PaymentMethodRepository.GetAsync(id);
 
                 if (paymentMethod == null)
                     return NotFound();
 
-               if( paymentMethod.Orders.Any())
-                    return BadRequest("This payment method is related to existing orders and cannot be deleted.");
+                var deleted = await _uow.PaymentMethodRepository.DeleteAsync(id);
 
-                await _uow.PaymentMethodRepository.DeleteAsync(id);
-
-                await _uow.Complete();
-                return NoContent();
+                var saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<PaymentMethodResDto>(deleted);
+                    return Ok(mapped);
+                }
+                return BadRequest();
             }
             catch (Exception)
             {
@@ -102,7 +100,7 @@ namespace Horas.Api.Controllers
             }
 
         }
-        
+
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] PaymentMethodUpdateDto dto)
         {
@@ -114,10 +112,9 @@ namespace Horas.Api.Controllers
             if (paymentMethod == null)
                 return NotFound();
 
-            _mapper.Map(dto, paymentMethod);
+            var mappingGo = _mapper.Map<PaymentMethod>(dto);
 
-            await _uow.PaymentMethodRepository.UpdateAsync(paymentMethod);
-
+            var updated = await _uow.PaymentMethodRepository.UpdateAsync(mappingGo);
             int saved = await _uow.Complete();
             if (saved > 0)
             {
