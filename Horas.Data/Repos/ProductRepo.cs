@@ -1,6 +1,3 @@
-﻿
-using Horas.Domain.Interfaces.IRepos;
-
 namespace Horas.Data.Repos
 {
     public class ProductRepo : BaseRepo<Product>, IProductRepo
@@ -13,7 +10,7 @@ namespace Horas.Data.Repos
         {
             return _dbset
                 .Include(x => x.Reviews)
-                .Include(x => x.Suppliers);
+                .Include(x => x.ProductSuppliers);
         }
     }
 }
