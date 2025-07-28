@@ -1,21 +1,20 @@
-﻿
-
-namespace Horas.Api.Dtos.Customer
+﻿namespace Horas.Api.Dtos.Customer
 {
     public class CustomerResDto
     {
         public Guid Id { get; set; }
-        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Phone { get; set; }
 
         public int OrdersCount { get; set; }
-        public  List<OrderReadDto> Orders { get; set; }
+        public List<OrderReadDto> Orders { get; set; }
         public List<PaymentMethodResDto> PaymentMethods { get; set; }
 
-        public  List<MessageResDto> Messages { get; set; }
+        public List<MessageResDto> Messages { get; set; }
 
         public List<ReviewResDto> Reviews { get; set; }
-        public WishlistResDto Wishlist { get; set; }
+        public WishListResDto Wishlist { get; set; }
 
         public CartResDto Cart { get; set; }
 

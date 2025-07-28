@@ -1,6 +1,4 @@
-﻿
-
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -14,11 +12,28 @@ namespace Horas.Api.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult>  GetById(Guid id)
-        //{
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            try
+            {
+                var found = await _uow.CategoryRepository.GetAsyncInclude(id);
 
-        //}
+                if (found == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<CategoryResDto>(found);
+
+                if (mapped == null)
+                    return NotFound();
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -29,7 +44,7 @@ namespace Horas.Api.Controllers
                 if (foundList == null)
                     return NotFound();
 
-                var mapped = _mapper.Map<IEnumerable< CategoryResDto>>(foundList);
+                var mapped = _mapper.Map<IEnumerable<CategoryResDto>>(foundList);
 
                 if (mapped == null)
                     return NotFound();
@@ -50,17 +65,17 @@ namespace Horas.Api.Controllers
                 return BadRequest(ModelState);
             }
             if (requestDto == null)
-                    return BadRequest();
+                return BadRequest();
 
-                var mappedGo = _mapper.Map<Category>(requestDto);
-                var created = await _uow.CategoryRepository.CreateAsync(mappedGo);
-                int saved = await _uow.Complete();
-                if (saved > 0)
-                {
-                    var mappedCome = _mapper.Map<CategoryResDto>(created);
-                    return Ok(mappedCome);
-                }
-                else return BadRequest();
+            var mappedGo = _mapper.Map<Category>(requestDto);
+            var created = await _uow.CategoryRepository.CreateAsync(mappedGo);
+            int saved = await _uow.Complete();
+            if (saved > 0)
+            {
+                var mappedCome = _mapper.Map<CategoryResDto>(created);
+                return Ok(mappedCome);
+            }
+            else return BadRequest();
         }
 
         [HttpPut]
@@ -70,17 +85,17 @@ namespace Horas.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-           
-                var mappedGo = _mapper.Map<Category>(requestDto);
-                var updated = await _uow.CategoryRepository.UpdateAsync(mappedGo);
-                int saved = await _uow.Complete();
-                if (saved > 0)
-                {
-                    var mappedCome = _mapper.Map<CategoryResDto>(updated);
-                    return Ok(mappedCome);
-                }
-                else return BadRequest();
-            
+
+            var mappedGo = _mapper.Map<Category>(requestDto);
+            var updated = await _uow.CategoryRepository.UpdateAsync(mappedGo);
+            int saved = await _uow.Complete();
+            if (saved > 0)
+            {
+                var mappedCome = _mapper.Map<CategoryResDto>(updated);
+                return Ok(mappedCome);
+            }
+            else return BadRequest();
+
         }
 
         [HttpDelete("{id}")]

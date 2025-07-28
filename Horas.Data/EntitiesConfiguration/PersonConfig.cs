@@ -7,7 +7,7 @@
             //builder.HasKey(x => x.Id);
             //builder.Property(x => x.Id).ValueGeneratedOnAdd();
             //builder.Property(x => x.UserName).IsRequired().HasMaxLength(100);
-            //builder.HasQueryFilter(x => x.IsExist);
+            //builder.HasQueryFilter(x => x.IsExist); //as this table related to identity //so can be null - so HasQueryFilter can break or make errors
         }
     }
 }

@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 namespace Horas.Data
 {
     //public class HorasDBContext: IdentityDbContext<Person>
@@ -10,7 +13,7 @@ namespace Horas.Data
     UserLogin,
     RoleClaim,
     UserToken>
-    
+
     {
         public HorasDBContext(DbContextOptions<HorasDBContext> options) : base(options)
         {
@@ -27,7 +30,7 @@ namespace Horas.Data
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var entries = ChangeTracker.Entries<Auditable>();
+            var entries = ChangeTracker.Entries<IAuditable>();
 
             foreach (var entry in entries)
             {
@@ -39,6 +42,7 @@ namespace Horas.Data
                 else if (entry.State == EntityState.Modified)
                 {
                     entry.Entity.ModifiedOn = DateTime.UtcNow;
+                    //entry.Property(x => x.CreatedOn).IsModified = false; //not track CreatedOn in case of modifing 
                 }
             }
 

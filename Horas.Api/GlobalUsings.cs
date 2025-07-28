@@ -1,41 +1,33 @@
 ﻿global using AutoMapper;
+global using Horas.Api.Dtos.AccountDto;
+global using Horas.Api.Dtos.Address;
 global using Horas.Api.Dtos.Cart;
 global using Horas.Api.Dtos.CartItem;
 global using Horas.Api.Dtos.Category;
 global using Horas.Api.Dtos.Customer;
-global using Horas.Api.Dtos.Customer;
-global using Horas.Api.Dtos.Message;
 global using Horas.Api.Dtos.Message;
 global using Horas.Api.Dtos.Notification;
 global using Horas.Api.Dtos.Order;
 global using Horas.Api.Dtos.OrderItem;
+global using Horas.Api.Dtos.OrderStatusHistory;
 global using Horas.Api.Dtos.PaymentMethod;
 global using Horas.Api.Dtos.Product;
+global using Horas.Api.Dtos.ProductSupplier;
+global using Horas.Api.Dtos.ProductWishlist;
 global using Horas.Api.Dtos.Report;
 global using Horas.Api.Dtos.Review;
 global using Horas.Api.Dtos.SubCategory;
-global using Horas.Api.Dtos.WishList;
-global using Horas.Domain;
-
-
-global using Horas.Domain.Interfaces;
-global using Microsoft.AspNetCore.Http;
-global using Microsoft.AspNetCore.Mvc;
-
-
-global using Horas.Data.IOC;
-
-global using System.ComponentModel.DataAnnotations;
-global using System.ComponentModel.DataAnnotations.Schema;
-
-global using System.ComponentModel.DataAnnotations;
-global using Horas.Api.Dtos.OrderStatusHistory;
-global using Horas.Api.Dtos.ProductWishlist;
-global using Horas.Domain.Entities;
-global using System.ComponentModel.DataAnnotations.Schema;
-
-global using Horas.Api.Dtos.Cart;
-global using Horas.Api.Dtos.CartItem;
-global using Horas.Api.Dtos.ProductSupplier;
 global using Horas.Api.Dtos.Supplier;
-
+global using Horas.Api.Dtos.WishList;
+global using Horas.Api.Extensions;
+global using Horas.Api.Helpers;
+global using Horas.Data.IOC;
+global using Horas.Domain;
+global using Horas.Domain.Entities;
+global using Horas.Domain.Interfaces;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Mvc;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;

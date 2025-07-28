@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,7 +21,7 @@ namespace Horas.Api.Controllers
                 var foundList = await _uow.OrderRepository.GetAllAsyncInclude();
 
                 if (foundList == null)
-                      return NotFound();
+                    return NotFound();
 
                 var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
 
@@ -67,27 +66,17 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (requestDto == null)
-                return BadRequest();
 
-            try
+            var order = _mapper.Map<Order>(requestDto);
+
+            var created = await _uow.OrderRepository.CreateAsync(order);
+            int saved = await _uow.Complete();
+            if (saved > 0)
             {
-                var order = _mapper.Map<Order>(requestDto);
-
-                if (order == null)
-                    return BadRequest();
-
-                await _uow.OrderRepository.CreateAsync(order);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<OrderResDto>(order);
-
-                return Content("Order Added Successfully");
+                var mapped = _mapper.Map<OrderResDto>(created);
+                return Ok(mapped);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            else return BadRequest();
         }
 
         [HttpDelete("{id}")]
@@ -100,17 +89,19 @@ namespace Horas.Api.Controllers
                 if (order == null)
                     return NotFound();
 
-                await _uow.OrderRepository.DeleteAsync(id);
-
-                await _uow.Complete();
-                return NoContent();
-
+                var deleted = await _uow.OrderRepository.DeleteAsync(id);
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<OrderResDto>(deleted);
+                    return Ok(mapped);
+                }
+                else return BadRequest();
             }
             catch (Exception)
             {
                 return StatusCode(500, "An error occurred while deleting the order.");
             }
-
         }
 
         [HttpPut]
@@ -119,25 +110,18 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var order = await _uow.OrderRepository.GetAsyncInclude(dto.Id);
+            var mappedGo = _mapper.Map<Order>(dto);
 
-            if (order == null)
-                return NotFound();
-
-            _mapper.Map(dto, order);
-
-            await _uow.OrderRepository.UpdateAsyncInclude(order);
+            var updated = await _uow.OrderRepository.UpdateAsyncInclude(mappedGo);
 
             int saved = await _uow.Complete();
             if (saved > 0)
             {
-                var result = _mapper.Map<OrderResDto>(order);
-                return Ok(result);
+                var mapped = _mapper.Map<OrderResDto>(updated);
+                return Ok(mapped);
             }
-            else
-            {
-                return BadRequest("No changes were saved.");
-            }
+            else return BadRequest("No changes were saved.");
+
         }
 
     }

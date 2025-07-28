@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -95,8 +94,6 @@ namespace Horas.Api.Controllers
                 return Ok(mappedCome);
             }
             else return BadRequest();
-
-
         }
 
         [HttpDelete("{id}")]

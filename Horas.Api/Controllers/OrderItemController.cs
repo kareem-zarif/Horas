@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -65,27 +64,17 @@ namespace Horas.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (requestDto == null)
-                return BadRequest();
+            var mappingGo = _mapper.Map<OrderItem>(requestDto);
 
-            try
+            var created = await _uow.OrderItemRepository.CreateAsync(mappingGo);
+
+            int saved = await _uow.Complete();
+            if (saved > 0)
             {
-                var orderitem = _mapper.Map<OrderItem>(requestDto);
-
-                if (orderitem == null)
-                    return BadRequest();
-
-                await _uow.OrderItemRepository.CreateAsync(orderitem);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<OrderItemResDto>(orderitem);
-
-                return CreatedAtAction(nameof(GetAll), new { id = orderitem.Id }, mapped);
+                var mapped = _mapper.Map<OrderItemResDto>(created);
+                return Ok(mapped);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            else return BadRequest();
         }
 
         [HttpDelete("{id}")]
@@ -99,21 +88,25 @@ namespace Horas.Api.Controllers
                 if (orderItem == null)
                     return NotFound();
 
-                await _uow.OrderItemRepository.DeleteAsync(id);
+                var deleted = await _uow.OrderItemRepository.DeleteAsync(id);
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<OrderItemResDto>(deleted);
+                    return Ok(mapped);
+                }
+                else return BadRequest("can not save in database");
 
-                await _uow.Complete();
-                return NoContent();
             }
             catch (Exception)
             {
                 return StatusCode(500, "An error occurred while deleting the payment method.");
             }
-
         }
 
 
         [HttpPut]
-        public async Task<IActionResult> Update( OrderItemUpdateDto dto)
+        public async Task<IActionResult> Update(OrderItemUpdateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -123,10 +116,9 @@ namespace Horas.Api.Controllers
             if (orderitem == null)
                 return NotFound();
 
-            _mapper.Map(dto, orderitem);
+            var mappedGo = _mapper.Map<OrderItem>(dto);
 
-            await _uow.OrderItemRepository.UpdateAsync(orderitem);
-
+            var updated = await _uow.OrderItemRepository.UpdateAsync(mappedGo);
             int saved = await _uow.Complete();
             if (saved > 0)
             {
@@ -134,9 +126,7 @@ namespace Horas.Api.Controllers
                 return Ok(result);
             }
             else
-            {
                 return BadRequest("No changes were saved.");
-            }
         }
 
     }

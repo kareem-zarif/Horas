@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -68,7 +67,7 @@ namespace Horas.Api.Controllers
                 return BadRequest(ModelState);
 
             var cartItem = _mapper.Map<CartItem>(requestDto);
-            if(cartItem == null) 
+            if (cartItem == null)
                 return BadRequest("Invalid CartItem data.");
 
             var created = await _uow.CartItemRepository.CreateAsync(cartItem);
@@ -97,7 +96,7 @@ namespace Horas.Api.Controllers
 
             var cartItem = _mapper.Map<CartItem>(requestDto);
 
-            if(cartItem == null) 
+            if (cartItem == null)
                 return BadRequest("Invalid CartItem data.");
 
             var updated = await _uow.CartItemRepository.UpdateAsync(cartItem);
