@@ -1,6 +1,6 @@
 ﻿namespace Horas.Domain
 {
-    public class Product : BaseEnt
+    public class Product : IBaseEnt
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -19,9 +19,15 @@
         public virtual SubCategory SubCategory { get; set; }
         public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; } = new HashSet<ProductSupplier>();
         public virtual ICollection<CartItem> CartItems { get; set; } = new HashSet<CartItem>();
-        public virtual ICollection<Wishlist> Wishlists { get; set; } = new HashSet<Wishlist>();
+        public virtual ICollection<ProductWishList> ProductWishLists { get; set; } = new HashSet<ProductWishList>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
         public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
-
+        //----------------------------------IbaseEnt
+        public Guid Id { get; set; }
+        public bool IsExist { get; set; } = true;
+        public Guid? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }

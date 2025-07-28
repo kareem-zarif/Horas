@@ -1,4 +1,4 @@
-﻿namespace Horas.Data.Repos
+namespace Horas.Data.Repos
 {
     public class ProductRepo : BaseRepo<Product>, IProductRepo
     {

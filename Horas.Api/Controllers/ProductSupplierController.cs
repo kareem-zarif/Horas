@@ -27,9 +27,6 @@ namespace Horas.Api.Controllers
 
                 var mapped = _mapper.Map<IEnumerable<ProductSupplierResDto>>(found);
 
-                if (mapped == null)
-                    return NotFound();
-
                 return Ok(mapped);
             }
             catch (Exception ex)
@@ -97,7 +94,7 @@ namespace Horas.Api.Controllers
 
             var productSupplier = _mapper.Map<ProductSupplier>(productSupplierDto);
 
-            productSupplier.Id = id;
+            //productSupplier.Id = id;
 
             var updated = await _uow.ProductSupplierRepository.UpdateAsync(productSupplier);
 
@@ -112,7 +109,7 @@ namespace Horas.Api.Controllers
         }
 
 
-    
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

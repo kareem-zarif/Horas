@@ -1,3 +1,10 @@
+using Horas.Data;
+using Horas.Data.DataAccess;
+using Horas.Data.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Horas.Api
 {
@@ -9,9 +16,7 @@ namespace Horas.Api
 
             // Add services to the container.
             builder.Services.ConfigData(builder.Configuration);
-            builder.Services.AddAutoMapper(op => op.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
-
-      
+            builder.Services.AddAutoMapper(op => op.AddMaps(typeof(Program).Assembly));
 
             #region Auth
 

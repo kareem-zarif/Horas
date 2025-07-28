@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -26,9 +25,6 @@ namespace Horas.Api.Controllers
 
                 var mapped = _mapper.Map<IEnumerable<SupplierResDto>>(found);
 
-                if (mapped == null)
-                    return NotFound();
-
                 return Ok(mapped);
             }
             catch (Exception ex)
@@ -50,9 +46,6 @@ namespace Horas.Api.Controllers
 
                 var mapped = _mapper.Map<SupplierResDto>(found);
 
-                if (mapped == null)
-                    return NotFound();
-
                 return Ok(mapped);
             }
             catch (Exception ex)
@@ -70,7 +63,7 @@ namespace Horas.Api.Controllers
             var supplier = _mapper.Map<Supplier>(supplierCreateDto);
 
             var created = await _uow.SupplierRepository.CreateAsync(supplier);
-            
+
             var saved = await _uow.Complete();
             if (saved > 0)
             {
@@ -82,23 +75,21 @@ namespace Horas.Api.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromForm] SupplierUpdateDto supplierUpdateDto)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] SupplierUpdateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            if (id != supplierUpdateDto.Id)
-                return BadRequest("ID mismatch");
-
-            var found = await _uow.SupplierRepository.GetAsyncInclude(id);
+            var found = await _uow.SupplierRepository.GetAsync(requestDto.Id);
 
             if (found == null)
                 return NotFound();
 
-            var supplier = _mapper.Map(supplierUpdateDto, found);
+            //var supplier = _mapper.Map<Supplier>(requestDto);
+            _mapper.Map(requestDto, found); // ← عدّل على نفس الكائن
 
-            var updated = await _uow.SupplierRepository.UpdateAsync(supplier);
+            var updated = await _uow.SupplierRepository.UpdateAsync(found);
 
             if (updated == null)
                 return NotFound();
