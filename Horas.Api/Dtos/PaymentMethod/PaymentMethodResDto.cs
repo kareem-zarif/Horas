@@ -3,8 +3,6 @@ namespace Horas.Api.Dtos.PaymentMethod
     public class PaymentMethodResDto
     {
 
-        public PaymentMethodType PaymentType { get; set; }
-        public string paymentDetails { get; set; }  
 
         public Guid Id { get; set; }
         public bool IsDefault { get; set; }
@@ -20,6 +18,9 @@ namespace Horas.Api.Dtos.PaymentMethod
         public Guid CustomerId { get; set; }
         public string CustomerName { get; set; }
         public ICollection<OrderResDto> Orders { get; set; }
+        //asmaa read only
+        public PaymentMethodType PaymentType { get; set; }
+        public string paymentDetails { get; set; }
 
     }
 }

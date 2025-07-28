@@ -1,6 +1,4 @@
-﻿
-
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -27,7 +25,7 @@ namespace Horas.Api.Controllers
                     return NotFound();
 
                 var mapped = _mapper.Map<IEnumerable<CustomerResDto>>(foundList);
-                
+
                 if (mapped == null)
                     return NotFound();
 
@@ -63,13 +61,15 @@ namespace Horas.Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> create([FromForm] CustomerCreateDto _CreateDto)
         {
-            if(!ModelState.IsValid)
-            return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var Customer = _mapper.Map<Customer>(_CreateDto);
-           var created =await _uow.CustomerRepository.CreateAsync(Customer);
+            var created = await _uow.CustomerRepository.CreateAsync(Customer);
             int saved = await _uow.Complete();
             if (saved > 0)
             {
@@ -86,8 +86,14 @@ namespace Horas.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var mappedGo = _mapper.Map<Customer>(requestDto);
-            var updated = await _uow.CustomerRepository.UpdateAsync(mappedGo);
+
+            var old = await _uow.CustomerRepository.GetAsync(requestDto.Id);
+            if (old == null)
+                return NotFound();
+
+            _mapper.Map(requestDto, old);
+            var updated = await _uow.CustomerRepository.UpdateAsync(old);
+
             int saved = await _uow.Complete();
             if (saved > 0)
             {
@@ -95,9 +101,9 @@ namespace Horas.Api.Controllers
                 return Ok(mappedCome);
             }
             else return BadRequest();
-
-
         }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -109,9 +115,10 @@ namespace Horas.Api.Controllers
                 {
                     var mapped = _mapper.Map<CustomerResDto>(deleted);
                     return Ok(mapped);
-    }
-                else return BadRequest();
-}
+                }
+                else
+                    return BadRequest();
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
@@ -125,5 +132,5 @@ namespace Horas.Api.Controllers
 
 
 
- 
+
 

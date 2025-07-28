@@ -1,7 +1,4 @@
-﻿using Horas.Api.Dtos.Product;
-using Horas.Api.Dtos.ProductWishlist;
-using Horas.Domain;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Horas.Api.Dtos.WishList
 {

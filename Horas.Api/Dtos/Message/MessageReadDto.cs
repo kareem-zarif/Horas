@@ -13,6 +13,10 @@ namespace Horas.Api.Dtos.Message
         [ForeignKey("Supplier")]
         public Guid? SupplierId { get; set; }
 
+        public string CustomerName { get; set; }
+        public string SupplierName { get; set; }
         public string SenderType { get; set; }
+
+        public DateTime MessageDateTime { get; set; }
     }
 }

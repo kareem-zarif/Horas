@@ -1,6 +1,6 @@
 ﻿namespace Horas.Domain
 {
-    public class PaymentMethod : BaseEnt
+    public class PaymentMethod : IBaseEnt
     {
         //if orderitem is sample will allow to him cash m if order not allow cash
         public PaymentMethodType PaymentType { get; set; }
@@ -22,6 +22,12 @@
         //nav
         public virtual Customer Customer { get; set; }
         public virtual ICollection<Order> Orders { get; set; } = new HashSet<Order>();
-
+        //IbaseEnt
+        public Guid Id { get; set; }
+        public bool IsExist { get; set; } = true;
+        public Guid? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }

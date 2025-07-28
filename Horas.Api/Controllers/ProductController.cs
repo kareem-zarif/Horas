@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,14 +18,11 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var foundList = await _uow.PrdouctRepository.GetAllAsyncInclude();
+                var foundList = await _uow.ProductRepository.GetAllAsyncInclude();
                 if (foundList == null)
                     return NotFound();
 
                 var mapped = _mapper.Map<IEnumerable<ProductResDto>>(foundList);
-
-                if (mapped == null)
-                    return NotFound();
 
                 return Ok(mapped);
             }
@@ -42,15 +38,12 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var found = await _uow.PrdouctRepository.GetAsyncInclude(id);
+                var found = await _uow.ProductRepository.GetAsyncInclude(id);
 
                 if (found == null)
                     return NotFound();
 
                 var mapped = _mapper.Map<ProductResDto>(found);
-
-                if (mapped == null)
-                    return NotFound();
 
                 return Ok(mapped);
             }
@@ -135,15 +128,17 @@ namespace Horas.Api.Controllers
 
 
 
-        [HttpPut("{id:guid}")]
+        [HttpPut]
         public async Task<IActionResult> Update([FromForm] ProductUpdateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var found = await _uow.ProductRepository.GetAsync(requestDto.Id);
+            if (found == null)
+                return NotFound();
 
-            _mapper.Map(requestDto, found);
+            //_mapper.Map(requestDto, found);
 
             if (requestDto.Images != null && requestDto.Images.Count > 0)
             {

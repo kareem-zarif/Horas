@@ -2,7 +2,7 @@
 
 namespace Horas.Data.Repos
 {
-  public class MessageRepo:BaseRepo<Message>,IMessageRepo
+    public class MessageRepo : BaseRepo<Message>, IMessageRepo
     {
         public MessageRepo(HorasDBContext dbContext) : base(dbContext)
         {

@@ -1,5 +1,4 @@
-﻿
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,7 +21,7 @@ namespace Horas.Api.Controllers
             try
             {
 
-                var foundList = await _uow.MessageRepository.GetAllAsync();
+                var foundList = await _uow.MessageRepository.GetAllAsyncInclude();
                 if (foundList == null)
                     return NotFound();
 
@@ -45,7 +44,7 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var found = await _uow.MessageRepository.GetAsync(id);
+                var found = await _uow.MessageRepository.GetAsyncInclude(id);
                 if (found == null)
                     return NotFound();
 

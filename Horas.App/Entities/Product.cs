@@ -1,8 +1,6 @@
-﻿using Horas.Domain.Entities;
-
-namespace Horas.Domain
+﻿namespace Horas.Domain
 {
-    public class Product : BaseEnt
+    public class Product : IBaseEnt
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -24,6 +22,12 @@ namespace Horas.Domain
         public virtual ICollection<ProductWishList> ProductWishLists { get; set; } = new HashSet<ProductWishList>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
         public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
-
+        //----------------------------------IbaseEnt
+        public Guid Id { get; set; }
+        public bool IsExist { get; set; } = true;
+        public Guid? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }

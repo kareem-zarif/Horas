@@ -82,20 +82,18 @@ namespace Horas.Api.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCart(Guid id, [FromBody] CartUpdateDto requestDto)
+        [HttpPut]
+        public async Task<IActionResult> UpdateCart([FromBody] CartUpdateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var found = await _uow.CartRepository.GetAsyncInclude(id);
+            var found = await _uow.CartRepository.GetAsyncInclude(requestDto.Id);
 
             if (found == null)
                 return NotFound();
 
             var cart = _mapper.Map<Cart>(requestDto);
-
-            cart.Id = id;
 
             var updated = await _uow.CartRepository.UpdateAsync(cart);
 
