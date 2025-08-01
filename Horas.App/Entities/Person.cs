@@ -14,7 +14,7 @@ namespace Horas.Domain
 
 
         //----------------------------------IbaseEnt
-        public Guid Id { get; set; }
+        //public Guid Id { get; set; }
         public bool IsExist { get; set; } = true;
         public Guid? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
