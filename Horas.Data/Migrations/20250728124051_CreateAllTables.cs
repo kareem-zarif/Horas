@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class intial : Migration
+    public partial class CreateAllTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -493,7 +493,6 @@ namespace Horas.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderStatus = table.Column<byte>(type: "tinyint", nullable: false),
-                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsExist = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),

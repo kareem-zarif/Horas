@@ -23,7 +23,7 @@ public class StoreContextSeed
                 Email = "admin@test.com",
             };
 
-            await userManager.CreateAsync(user, "Pa$$w0rd");
+            await userManager.CreateAsync(user, "P@ssw0rd");
             await userManager.AddToRoleAsync(user, "Admin");
 
 
