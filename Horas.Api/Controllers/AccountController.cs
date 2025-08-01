@@ -1,16 +1,4 @@
-﻿using AutoMapper;
-using Horas.Api.Dtos.AccountDto;
-using Horas.Api.Dtos.AccountDto.Horas.Api.Dtos;
-using Horas.Api.Extensions;
-using Horas.Api.Helpers;
-using Horas.Domain;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
