@@ -44,6 +44,8 @@ namespace Horas.Api
 
             #endregion
 
+            builder.Services.AddMemoryCache();
+
 
             builder.Services.AddControllers();
 
