@@ -65,26 +65,7 @@ namespace Horas.Api
 
             var app = builder.Build();
 
-            //#region role
-
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            //    string[] roles = { "Admin", "Customer", "Supplier" };
-
-            //    foreach (var role in roles)
-            //    {
-            //        var roleExists =await roleManager.RoleExistsAsync(role);
-            //        if (!roleExists)
-            //        {
-            //            await roleManager.CreateAsync(new IdentityRole(role));
-            //        }
-            //    }
-            //}
-            //#endregion
-
-
+         
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
