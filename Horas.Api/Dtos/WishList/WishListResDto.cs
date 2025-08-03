@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Dtos.WishList
+﻿using System.Collections.ObjectModel;
+
+namespace Horas.Api.Dtos.WishList
 {
     public class WishListResDto
     {
