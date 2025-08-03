@@ -7,6 +7,6 @@ namespace Horas.Api.Dtos.WishList
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public string CustomerName { get; set; }
-        public Collection<ProductWishlistResDto> ProductWishlist { get; set; }
+        public ICollection<ProductResDto> Products { get; set; }
     }
 }
