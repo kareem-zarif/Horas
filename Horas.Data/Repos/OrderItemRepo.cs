@@ -1,8 +1,4 @@
-﻿
-using Horas.Data.Repos;
-using Horas.Domain.Interfaces.IRepos;
-
-namespace Horas.Data.Repos
+﻿namespace Horas.Data.Repos
 {
     public class OrderItemRepo : BaseRepo<OrderItem>, IOrderItemRepo
     {
@@ -10,13 +6,14 @@ namespace Horas.Data.Repos
         {
         }
 
-    
+
         protected override IQueryable<OrderItem> IncludeNavProperties(DbSet<OrderItem> NavProperty)
         {
 
             return _dbset.
                     Include(p => p.Product)
-                   .Include(o => o.Order);
+                   .Include(o => o.Order)
+                   ;
         }
 
     }

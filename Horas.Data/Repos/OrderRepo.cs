@@ -1,7 +1,4 @@
-﻿
-using Horas.Domain.Interfaces.IRepos;
-
-namespace Horas.Data.Repos
+﻿namespace Horas.Data.Repos
 {
     public class OrderRepo : BaseRepo<Order>, IOrderRepo
     {
@@ -13,8 +10,11 @@ namespace Horas.Data.Repos
             return _dbset
                 .Include(x => x.Customer)
                 .Include(x => x.PaymentMethod)
+                .Include(x => x.StatusHistories)
                 .Include(oi => oi.OrderItems)
-                ;
+                    .ThenInclude(x => x.Product)
+                 .AsSplitQuery();
+            ;
         }
     }
 }

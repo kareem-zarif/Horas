@@ -1,7 +1,4 @@
-﻿
-using Horas.Domain.Interfaces.IRepos;
-
-namespace Horas.Data.Repos
+﻿namespace Horas.Data.Repos
 {
     public class WishListRepo : BaseRepo<Wishlist>, IWishListRepo
     {
@@ -11,8 +8,9 @@ namespace Horas.Data.Repos
         protected override IQueryable<Wishlist> IncludeNavProperties(DbSet<Wishlist> NavProperty)
         {
             return _dbset.Include(x => x.Customer)
-                         .Include(x => x.ProductWishLists);
-
+                         .Include(x => x.ProductWishLists)
+                            .ThenInclude(x => x.Product)
+                            .AsSplitQuery();
 
         }
     }

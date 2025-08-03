@@ -1,7 +1,7 @@
 ﻿
 namespace Horas.Api.Dtos.Order
 {
-    public class OrderResDto 
+    public class OrderResDto
     {
         public Guid Id { get; set; }
         public int? PaymentMethodName { get; set; }
@@ -12,7 +12,8 @@ namespace Horas.Api.Dtos.Order
         [Required]
         public Guid? PaymentMethodId { get; set; }
         public Guid? CustomerId { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public ICollection<OrderStatusHistoryResDto>? OrderStatusHistory { get; set; }
         public ICollection<OrderItemResDto> OrderItems { get; set; } = new HashSet<OrderItemResDto>();
-
     }
 }

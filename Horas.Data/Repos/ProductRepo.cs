@@ -9,8 +9,10 @@ namespace Horas.Data.Repos
         protected override IQueryable<Product> IncludeNavProperties(DbSet<Product> NavProperty)
         {
             return _dbset
+                .Include(x => x.ProductSuppliers)
+                    .ThenInclude(x => x.Supplier)
                 .Include(x => x.Reviews)
-                .Include(x => x.ProductSuppliers);
+                    .AsSplitQuery(); //to solve the cartesian problem
         }
     }
 }

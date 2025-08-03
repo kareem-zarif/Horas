@@ -7,7 +7,8 @@
         }
         protected override IQueryable<ProductWishList> IncludeNavProperties(DbSet<ProductWishList> NavProperty)
         {
-            return _dbset.Include(x => x.Product);
+            return _dbset
+                .Include(x => x.Product);
         }
     }
 }

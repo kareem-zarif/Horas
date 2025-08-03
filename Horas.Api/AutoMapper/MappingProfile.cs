@@ -12,9 +12,11 @@ public class MappingProfile : Profile
         CreateMap<Product, ProductResDto>()
             .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Reviews != null && src.Reviews.Any()
                 ? src.Reviews.Sum(x => x.Rating) / (src.Reviews.Count) : 0))
+            .ForMember(dest => dest.Suppliers, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Supplier.FactoryName)))
             .ReverseMap();
 
         #endregion
+
 
         #region SubCategory
         CreateMap<SubCategoryCreateDto, SubCategory>().ReverseMap();
@@ -22,7 +24,9 @@ public class MappingProfile : Profile
         CreateMap<SubCategoryUpdateDto, SubCategory>().ReverseMap();
 
         CreateMap<SubCategory, SubCategoryResDto>()
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
+            .ReverseMap();
         #endregion
 
 
@@ -73,6 +77,7 @@ public class MappingProfile : Profile
              src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().State : null))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src =>
              src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().City : null))
+            .ForMember(des => des.Products, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Product)))
             .ReverseMap();
         #endregion
 
@@ -106,6 +111,7 @@ public class MappingProfile : Profile
             .ReverseMap();
         #endregion
 
+
         #region Category
 
         CreateMap<CategoryCreateDto, Category>().ReverseMap();
@@ -115,6 +121,7 @@ public class MappingProfile : Profile
 
 
         #endregion
+
 
         #region Customer
 
@@ -129,13 +136,6 @@ public class MappingProfile : Profile
         //.ForMember(dest => dest.Orders.Count, opt => opt.MapFrom(src => src.OrdersCount)).ReverseMap();
         // ForMember(dest => dest.MessagesCount, opt => opt.MapFrom(src => src.Messages.Count)).ReverseMap();
         #endregion
-
-        #region order
-        CreateMap<Order, OrderReadDto>().ReverseMap();
-        // CreateMap<OrderItem,OrderItemReadDto>()
-        //.ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name)).ReverseMap();
-        #endregion
-
 
 
         #region Message
@@ -153,6 +153,7 @@ public class MappingProfile : Profile
             .ReverseMap();
         #endregion
 
+
         #region review
         CreateMap<Review, ReviewUpdateDto>().ReverseMap();
         CreateMap<Review, ReviewCreateDto>().ReverseMap();
@@ -160,6 +161,7 @@ public class MappingProfile : Profile
         .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
         .ReverseMap();
         #endregion
+
 
         #region notification
         CreateMap<NotificationResDto, Notification>().ReverseMap();
@@ -180,10 +182,11 @@ public class MappingProfile : Profile
             .ReverseMap();
         CreateMap<Wishlist, WishListResDto>()
             .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => $"{src.Customer.FirstName} {src.Customer.LastName}"))
-            .ForMember(dest => dest.ProductWishlist, opt => opt.MapFrom(src => src.ProductWishLists.ToList()))
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.ProductWishLists.Select(x => x.Product)))
             .ReverseMap();
 
         #endregion
+
 
         #region ProductWishlist
         CreateMap<ProductWishList, ProductWishlistCreateDto>().ReverseMap();
@@ -194,22 +197,29 @@ public class MappingProfile : Profile
 
         #endregion
 
+
         #region Orders
         CreateMap<Order, OrderCreateDto>().ReverseMap();
         CreateMap<OrderUpdateDto, Order>().ReverseMap();
+        CreateMap<Order, OrderReadDto>().ReverseMap();
         CreateMap<Order, OrderResDto>()
                    .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? $"{src.Customer.FirstName} {src.Customer.LastName}" : null))
                    .ForMember(dest => dest.PaymentMethodName, opt => opt.MapFrom(src => src.PaymentMethod != null ? (int?)src.PaymentMethod.PaymentType : null))
-                   .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems)).
-                    ReverseMap();
+                   .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
+                    .ForMember(des => des.OrderStatusHistory, opt => opt.MapFrom(src => src.StatusHistories))
+                   //.ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
+                   .ReverseMap();
         #endregion
 
         #region OrderItem
 
         CreateMap<OrderItem, OrderItemCreateDto>().ReverseMap();
         CreateMap<OrderItem, OrderItemUpdateDto>().ReverseMap();
+        CreateMap<OrderItem, OrderItemReadDto>().ReverseMap();
         CreateMap<OrderItem, OrderItemResDto>()
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name)).ReverseMap();
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+             .ForMember(dest => dest.productImage, opt => opt.MapFrom(src => src.Product.ProductPicsPathes.FirstOrDefault()))
+            .ReverseMap();
         #endregion
 
         #region OrderStatusHistory
