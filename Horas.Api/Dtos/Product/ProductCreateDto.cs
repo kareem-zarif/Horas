@@ -1,6 +1,4 @@
-﻿using Horas.Domain;
-using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Horas.Api.Dtos.Product
 {
     public class ProductCreateDto
