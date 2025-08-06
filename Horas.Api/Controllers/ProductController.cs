@@ -9,7 +9,7 @@ namespace Horas.Api.Controllers
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
         private readonly IMediator _madiator;
-        public ProductController(IUOW uow, IMapper mapper , IMediator madiator)
+        public ProductController(IUOW uow, IMapper mapper, IMediator madiator)
         {
             _uow = uow;
             _mapper = mapper;
@@ -105,7 +105,7 @@ namespace Horas.Api.Controllers
             Product createdInclude;
             if (saved > 0)
             {
-           createdInclude = await _uow.ProductRepository.GetAsyncInclude(created.Id);
+                createdInclude = await _uow.ProductRepository.GetAsyncInclude(created.Id);
                 await _madiator.Publish(new NotificationEvent(
                     $"A New Product Added: {created.Name}",
                     supplierIdFromDB
@@ -151,6 +151,8 @@ namespace Horas.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromForm] ProductUpdateDto requestDto)
         {
+            ProductApprovalStatus previousStatus = ProductApprovalStatus.Pending;
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -207,7 +209,7 @@ namespace Horas.Api.Controllers
                     {
                         await _madiator.Publish(new ProductChangedEvent(
                             updated.Id,
-                            message: message           
+                            message: message
                             ));
                     }
                 }

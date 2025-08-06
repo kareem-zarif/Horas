@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using Horas.Data;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+﻿
+using Product = Horas.Domain.Product;
 
 namespace Horas.Api.Controllers
 {
@@ -35,7 +30,7 @@ namespace Horas.Api.Controllers
             var userOrders = await _context.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
-                        .ThenInclude(e=>e.SubCategory)
+                        .ThenInclude(e => e.SubCategory)
                 .Where(o => o.CustomerId == userId)
                 .ToListAsync();
 

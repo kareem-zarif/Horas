@@ -1,27 +1,6 @@
-<<<<<<< HEAD
-using System.Text;
-using Horas.Data;
-using Horas.Data.DataAccess;
-using Horas.Data.Services;
-using Horas.Utilities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+
+//not move to global using
 using Person = Horas.Domain.Person;
-=======
-using Horas.Application.Handlers;
-using Horas.Data;
-using Horas.Data.DataAccess;
-using Horas.Data.Services;
-using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
-using System.Text;
->>>>>>> origin/menna2
-
-
 namespace Horas.Api
 {
     public class Program
@@ -94,7 +73,7 @@ namespace Horas.Api
 
             var app = builder.Build();
 
-         
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

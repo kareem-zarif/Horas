@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Horas.Data/Migrations/20250728124051_CreateAllTables.cs
-    public partial class CreateAllTables : Migration
-========
-    public partial class _0 : Migration
->>>>>>>> origin/menna2:Horas.Data/Migrations/20250731233131_0.cs
+    public partial class intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -442,6 +438,7 @@ namespace Horas.Data.Migrations
                     TotalAmount = table.Column<double>(type: "float", nullable: false),
                     PaymentMethodId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrderStatus = table.Column<byte>(type: "tinyint", nullable: false),
                     IsExist = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),

@@ -22,22 +22,6 @@ namespace Horas.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CustomerNotification", b =>
-                {
-                    b.Property<Guid>("CustomersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("NotificationsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CustomersId", "NotificationsId");
-
-                    b.HasIndex("NotificationsId");
-
-                    b.ToTable("CustomerNotification", (string)null);
-                });
-
-
             modelBuilder.Entity("Horas.Data.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -219,7 +203,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Horas.Domain.Cart", b =>
@@ -251,7 +235,7 @@ namespace Horas.Data.Migrations
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Horas.Domain.CartItem", b =>
@@ -290,7 +274,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Horas.Domain.Category", b =>
@@ -325,7 +309,7 @@ namespace Horas.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Horas.Domain.Entities.PersonNotification", b =>
@@ -405,7 +389,7 @@ namespace Horas.Data.Migrations
                     b.HasIndex("ProductId", "SupplierId")
                         .IsUnique();
 
-                    b.ToTable("ProductSuppliers", (string)null);
+                    b.ToTable("ProductSuppliers");
                 });
 
             modelBuilder.Entity("Horas.Domain.Entities.ProductWishList", b =>
@@ -442,7 +426,7 @@ namespace Horas.Data.Migrations
                     b.HasIndex("ProductId", "WishListId")
                         .IsUnique();
 
-                    b.ToTable("ProductWishLists", (string)null);
+                    b.ToTable("ProductWishLists");
                 });
 
             modelBuilder.Entity("Horas.Domain.Message", b =>
@@ -483,7 +467,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Horas.Domain.Notification", b =>
@@ -514,7 +498,7 @@ namespace Horas.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Horas.Domain.Order", b =>
@@ -541,6 +525,9 @@ namespace Horas.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<byte>("OrderStatus")
+                        .HasColumnType("tinyint");
+
                     b.Property<Guid?>("PaymentMethodId")
                         .HasColumnType("uniqueidentifier");
 
@@ -553,7 +540,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Horas.Domain.OrderItem", b =>
@@ -598,7 +585,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Horas.Domain.OrderStatusHistory", b =>
@@ -632,7 +619,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderStatusHistories", (string)null);
+                    b.ToTable("OrderStatusHistories");
                 });
 
             modelBuilder.Entity("Horas.Domain.PaymentMethod", b =>
@@ -693,7 +680,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("PaymentMethods", (string)null);
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("Horas.Domain.Person", b =>
@@ -859,7 +846,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Horas.Domain.Report", b =>
@@ -899,7 +886,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Reports", (string)null);
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Horas.Domain.Review", b =>
@@ -942,7 +929,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Horas.Domain.SubCategory", b =>
@@ -982,7 +969,7 @@ namespace Horas.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("SubCategories", (string)null);
+                    b.ToTable("SubCategories");
                 });
 
             modelBuilder.Entity("Horas.Domain.Wishlist", b =>
@@ -1014,7 +1001,7 @@ namespace Horas.Data.Migrations
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("Horas.Domain.Customer", b =>

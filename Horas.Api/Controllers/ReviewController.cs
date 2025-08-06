@@ -1,9 +1,8 @@
-<<<<<<< HEAD
-﻿using Review = Horas.Domain.Review;
 
-=======
-﻿
->>>>>>> origin/menna2
+
+
+// Do not add to globbal usings
+using Review = Horas.Domain.Review;
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -85,7 +84,7 @@ namespace Horas.Api.Controllers
             else
                 return BadRequest();
         }
-       
+
 
         [HttpPut]
         public async Task<IActionResult> Update(ReviewUpdateDto requestDto)

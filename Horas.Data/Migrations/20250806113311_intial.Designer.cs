@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-<<<<<<<< HEAD:Horas.Data/Migrations/20250731002915_AddOrderStatusInTblOrder.Designer.cs
-    [Migration("20250731002915_AddOrderStatusInTblOrder")]
-    partial class AddOrderStatusInTblOrder
-========
-    [Migration("20250731233131_0")]
-    partial class _0
->>>>>>>> origin/menna2:Horas.Data/Migrations/20250731233131_0.Designer.cs
+    [Migration("20250806113311_intial")]
+    partial class intial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1258,7 +1253,7 @@ namespace Horas.Data.Migrations
             modelBuilder.Entity("Horas.Domain.OrderStatusHistory", b =>
                 {
                     b.HasOne("Horas.Domain.Order", "Order")
-                        .WithMany("StatusStatusHistories")
+                        .WithMany("StatusHistories")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1365,7 +1360,7 @@ namespace Horas.Data.Migrations
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("StatusStatusHistories");
+                    b.Navigation("StatusHistories");
                 });
 
             modelBuilder.Entity("Horas.Domain.PaymentMethod", b =>

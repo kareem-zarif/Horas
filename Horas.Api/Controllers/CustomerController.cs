@@ -1,6 +1,6 @@
-﻿using Horas.Domain.Events;
-using MediatR;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+﻿
+// Do not add to globbal usings
+using Customer = Horas.Domain.Customer;
 
 namespace Horas.Api.Controllers
 {
