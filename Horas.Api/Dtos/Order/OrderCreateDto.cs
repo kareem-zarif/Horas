@@ -9,7 +9,7 @@ namespace Horas.Api.Dtos.Order
         public Guid? CustomerId { get; set; }
 
         //in case to had to add to your order list of order items use the next Line below
-        //public ICollection<OrderItemCreateDto> OrderItems { get; set; } = new HashSet<OrderItemCreateDto>();
+        public ICollection<OrderItemCreateDto> OrderItems { get; set; } = new HashSet<OrderItemCreateDto>();
 
     }
 }

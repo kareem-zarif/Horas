@@ -138,7 +138,7 @@
             if (found == null)
                 return NotFound();
 
-            //_mapper.Map(requestDto, found);
+            _mapper.Map(requestDto, found);
 
             if (requestDto.Images != null && requestDto.Images.Count > 0)
             {

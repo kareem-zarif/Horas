@@ -10,6 +10,9 @@
 
             builder.HasOne(x => x.Customer)
                 .WithOne(x => x.Cart).HasForeignKey<Cart>(ca => ca.CustomerId).OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(c => c.CustomerId)
+                   .IsUnique(); //backend بيرفض إنشاء كارت لنفس العميل مرتين:
         }
     }
 }

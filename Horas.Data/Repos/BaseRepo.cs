@@ -55,6 +55,7 @@
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
+            var found = await _dbset.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id);
             var created = await _dbset.AddAsync(entity);
             return created.Entity;
         }

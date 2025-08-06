@@ -53,10 +53,12 @@ public class MappingProfile : Profile
             .ReverseMap();
 
         CreateMap<CartItem, CartItemResDto>()
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
-            .ForMember(dest => dest.PricePerPiece, opt => opt.MapFrom(src => src.Product.PricePerPiece))
-            .ForMember(dest => dest.PricePer100Piece, opt => opt.MapFrom(src => src.Product.PricePer100Piece))
-            .ForMember(dest => dest.ProductPicsPathes, opt => opt.MapFrom(src => src.Product.ProductPicsPathes))
+            //.ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+            //.ForMember(dest => dest.PricePerPiece, opt => opt.MapFrom(src => src.Product.PricePerPiece))
+            //.ForMember(dest => dest.PricePer100Piece, opt => opt.MapFrom(src => src.Product.PricePer100Piece))
+            //.ForMember(dest => dest.ProductPicsPathes, opt => opt.MapFrom(src => src.Product.ProductPicsPathes))
+            //.ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product.Id))
+            .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product))
             .ReverseMap();
         #endregion
 

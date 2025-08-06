@@ -6,5 +6,6 @@
         public Guid CustomerId { get; set; }
         public ICollection<CartItemResDto> CartItems { get; set; }
 
+
     }
 }
