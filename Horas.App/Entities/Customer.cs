@@ -12,7 +12,6 @@ namespace Horas.Domain
         public virtual ICollection<Message> Messages { get; set; } = new HashSet<Message>();
         public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
         public virtual ICollection<Report> Reports { get; set; } = new HashSet<Report>();
-        public virtual ICollection<Notification> Notifications { get; set; } = new HashSet<Notification>();
 
     }
 }

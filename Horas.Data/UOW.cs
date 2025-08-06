@@ -32,6 +32,7 @@ namespace Horas.Data
         private ISupplierRepo _supplierRepo;
         private IAddressRepo _addressRepo;
         private IProductSupplierRepo _productSupplierRepo;
+        private IPersonNotificationRepo _personNotificationRepo;
 
 
         public UOW(HorasDBContext context)
@@ -58,6 +59,7 @@ namespace Horas.Data
         public IProductSupplierRepo ProductSupplierRepository => _productSupplierRepo ??= new ProductSupplierRepo(_context);
         public IMessageRepo MessageRepository => _messageRepo ??= new MessageRepo(_context);
         public IReviewRepo ReviewRepository => _reviewRepo ??= new ReviewRepo(_context);
+        public IPersonNotificationRepo PersonNotificationRepository => _personNotificationRepo ??= new PersonNotificationRepo(_context);
         public async Task<int> Complete()
         {
             return await _context.SaveChangesAsync();

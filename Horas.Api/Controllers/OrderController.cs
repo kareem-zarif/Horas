@@ -6,10 +6,12 @@
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public OrderController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public OrderController(IUOW uow, IMapper mapper, IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
 
@@ -73,6 +75,14 @@
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                if (!order.CustomerId.HasValue)
+                    return BadRequest("CustomerId is required to create a notification.");
+
+                await _mediator.Publish(new NotificationEvent(
+                    message: $" Order Created Successfully  {order.Id}",
+                    personId: order.CustomerId.Value
+                ));
+
                 var mapped = _mapper.Map<OrderResDto>(created);
                 return Ok(mapped);
             }
@@ -117,6 +127,7 @@
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                
                 var mapped = _mapper.Map<OrderResDto>(updated);
                 return Ok(mapped);
             }

@@ -75,6 +75,7 @@ namespace Horas.Data
         public virtual DbSet<Wishlist> Wishlists { get; set; }
 
         public virtual DbSet<ProductWishList> ProductWishLists { get; set; }
+        public virtual DbSet<PersonNotification> PersonNotification { get; set; }
 
         public virtual DbSet<ProductSupplier> ProductSuppliers { get; set; }
 

@@ -1,4 +1,7 @@
-﻿namespace Horas.Api.Controllers
+﻿using Horas.Domain.Events;
+using MediatR;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -6,10 +9,12 @@
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public MessageController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public MessageController(IUOW uow, IMapper mapper , IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
 
@@ -70,9 +75,25 @@
                 return BadRequest();
             var Message = _mapper.Map<Message>(_CreateDto);
             var created = await _uow.MessageRepository.CreateAsync(Message);
-            int saved = await _uow.Complete();
+            int saved  = await _uow.Complete();
+
             if (saved > 0)
             {
+                if (_CreateDto.Sendto.ToLower() == "customer" && Message.CustomerId.HasValue)
+                {
+                    await _mediator.Publish(new NotificationEvent(
+                        message: $"You received a new message from the supplier  .",
+                        personId: Message.CustomerId.Value
+                    ));
+                }
+                else if (_CreateDto.Sendto.ToLower() == "supplier" && Message.SupplierId.HasValue)
+                {
+                    await _mediator.Publish(new NotificationEvent(
+                        message: $"You received a new message from the customer ",
+                        personId: Message.SupplierId.Value
+                    ));
+                }
+
                 var mapped = _mapper.Map<MessageReadDto>(created);
                 return Ok(mapped);
             }

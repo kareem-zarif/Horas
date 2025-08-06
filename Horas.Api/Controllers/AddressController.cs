@@ -6,10 +6,12 @@
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public AddressController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public AddressController(IUOW uow, IMapper mapper, IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
 
@@ -78,6 +80,13 @@
             var saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+
+                  message: $"Your address has been added successfully  ",
+                  personId: created.PersonId
+
+                ));
+
                 var mapped = _mapper.Map<AddressResDto>(created);
                 return Ok(mapped);
             }
@@ -92,7 +101,7 @@
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var found = await _uow.AddressRepository.GetAsyncInclude(requestDto.Id);
+            var found = await _uow.AddressRepository.GetAsync(requestDto.Id);
 
             if (found == null)
                 return NotFound();
@@ -104,6 +113,13 @@
             var saved = await _uow.Complete();
             if (saved > 0)
             {
+
+                await _mediator.Publish(new NotificationEvent(
+
+                  message: $"Your Address Has Been Updated Successfully ",
+                  personId: updated.PersonId
+
+                ));
                 var mapped = _mapper.Map<AddressResDto>(updated);
                 return Ok(mapped);
             }
@@ -117,16 +133,17 @@
         {
             try
             {
-                var found = await _uow.AddressRepository.GetAsyncInclude(id);
+                var found = await _uow.AddressRepository.DeleteAsyncInclude(id);
 
                 if (found == null)
                     return NotFound();
 
-                var deleted = await _uow.AddressRepository.DeleteAsyncInclude(id);
+                var deleted = await _uow.AddressRepository.DeleteAsync(id);
 
                 var saved = await _uow.Complete();
                 if (saved > 0)
                 {
+   
                     var mapped = _mapper.Map<AddressResDto>(deleted);
                     return Ok(mapped);
                 }

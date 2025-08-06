@@ -7,10 +7,13 @@
 
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public OrderStatusHistoryController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+
+        public OrderStatusHistoryController(IUOW uow, IMapper mapper,IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -25,6 +28,7 @@
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new OrderStatusChangedEvent(created.OrderId, created.OrderStatus));
                 var mapped = _mapper.Map<OrderStatusHistoryResDto>(mappedGo);
                 return Ok(mapped);
             }

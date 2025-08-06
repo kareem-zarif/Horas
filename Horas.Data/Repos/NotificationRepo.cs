@@ -10,7 +10,7 @@ namespace Horas.Data.Repos
 
         protected override IQueryable<Notification> IncludeNavProperties(DbSet<Notification> dbSet)
         {
-            return _dbset.Include(x => x.Customers);
+            return _dbset.Include(x => x.PersonNotifications);
                
                
         }

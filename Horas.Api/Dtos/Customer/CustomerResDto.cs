@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Dtos.Customer
+﻿using Horas.Api.Dtos.CustomerNotification;
+
+namespace Horas.Api.Dtos.Customer
 {
     public class CustomerResDto
     {
@@ -18,7 +20,7 @@
 
         public CartResDto Cart { get; set; }
 
-        public List<NotificationReadDto> Notifications { get; set; }
+        public List<PersonNotificationRespDto> PersonNotification { get; set; }
         public List<ReportResDto> Reports { get; set; }
 
         // public PaymentMethodType DefaultPaymentMethodType { get; set; } = PaymentMethodType.Cash;

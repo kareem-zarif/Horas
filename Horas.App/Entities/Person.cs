@@ -11,6 +11,7 @@ namespace Horas.Domain
 
         //nav
         public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
+        public virtual ICollection<PersonNotification> PersonNotifications { get; set; } = new HashSet<PersonNotification>();
 
 
         //----------------------------------IbaseEnt

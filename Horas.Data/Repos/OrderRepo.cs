@@ -13,7 +13,8 @@ namespace Horas.Data.Repos
             return _dbset
                 .Include(x => x.Customer)
                 .Include(x => x.PaymentMethod)
-                .Include(oi => oi.OrderItems)
+                .Include(oi => oi.OrderItems).
+                 Include(s =>s.StatusHistories)
                 ;
         }
     }

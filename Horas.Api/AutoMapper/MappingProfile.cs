@@ -1,3 +1,5 @@
+using Horas.Api.Dtos.CustomerNotification;
+
 public class MappingProfile : Profile
 {
     public MappingProfile()
@@ -123,6 +125,8 @@ public class MappingProfile : Profile
         CreateMap<CustomerReadDto, Customer>().ReverseMap();
         CreateMap<Customer, CustomerResDto>()
             .ForMember(dest => dest.OrdersCount, opt => opt.MapFrom(src => src.Orders != null ? src.Orders.Count : 0))
+            .ForMember(dest => dest.PersonNotification, opt => opt.MapFrom(src => src.PersonNotifications))
+
             .ReverseMap();
 
         //CreateMap<CustomerResDto, Customer>()
@@ -246,6 +250,13 @@ public class MappingProfile : Profile
 
         #endregion
 
+        #region PersonNotification
+        CreateMap<PersonNotificationCreateDto, PersonNotification>().ReverseMap();
+        CreateMap<PersonNotificationUpdateDto, PersonNotification>().ReverseMap();
+        CreateMap<PersonNotificationRespDto, PersonNotification>()
+            .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
+            .ReverseMap();
+        #endregion
     }
 
 }
