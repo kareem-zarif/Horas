@@ -1,10 +1,12 @@
+using System.Text;
 using Horas.Data;
 using Horas.Data.DataAccess;
 using Horas.Data.Services;
+using Horas.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Person = Horas.Domain.Person;
 
 namespace Horas.Api
 {
@@ -42,6 +44,12 @@ namespace Horas.Api
 
             builder.Services.AddAuthorization();
 
+            #endregion
+
+
+            #region Stripe Payment
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSetting"));
+            StripeConfiguration.ApiKey = builder.Configuration["StripeSetting:SecretKey"];
             #endregion
 
 

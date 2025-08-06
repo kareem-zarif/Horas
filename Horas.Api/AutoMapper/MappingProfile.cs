@@ -1,3 +1,9 @@
+using Address = Horas.Domain.Address;
+using Customer = Horas.Domain.Customer;
+using PaymentMethod = Horas.Domain.PaymentMethod;
+using Product = Horas.Domain.Product;
+using Review = Horas.Domain.Review;
+
 public class MappingProfile : Profile
 {
     public MappingProfile()
