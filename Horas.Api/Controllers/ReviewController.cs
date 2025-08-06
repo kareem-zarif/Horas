@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿using Review = Horas.Domain.Review;
 
+=======
+﻿
+>>>>>>> origin/menna2
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -8,10 +12,12 @@ namespace Horas.Api.Controllers
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public ReviewController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public ReviewController(IUOW uow, IMapper mapper, IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
 
@@ -71,13 +77,15 @@ namespace Horas.Api.Controllers
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new ReviewCreatedEvent(created.Id));
+
                 var mapped = _mapper.Map<ReviewResDto>(created);
                 return Ok(mapped);
             }
             else
                 return BadRequest();
         }
-
+       
 
         [HttpPut]
         public async Task<IActionResult> Update(ReviewUpdateDto requestDto)

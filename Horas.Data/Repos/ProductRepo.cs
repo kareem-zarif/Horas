@@ -10,7 +10,9 @@ namespace Horas.Data.Repos
         {
             return _dbset
                 .Include(x => x.Reviews)
-                .Include(x => x.ProductSuppliers);
+                .Include(x => x.ProductSuppliers)
+                    .ThenInclude(x=>x.Supplier)
+                .AsSplitQuery();
         }
     }
 }

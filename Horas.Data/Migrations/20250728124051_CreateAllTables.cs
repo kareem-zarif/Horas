@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateAllTables : Migration
+
+    public partial class _0 : Migration
+
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,7 +91,6 @@ namespace Horas.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
                     IsExist = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -400,24 +401,32 @@ namespace Horas.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomerNotification",
+                name: "PersonNotification",
                 columns: table => new
                 {
-                    CustomersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NotificationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NotificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnable = table.Column<bool>(type: "bit", nullable: false),
+                    IsExist = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CustomerNotification", x => new { x.CustomersId, x.NotificationsId });
+                    table.PrimaryKey("PK_PersonNotification", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CustomerNotification_AspNetUsers_CustomersId",
-                        column: x => x.CustomersId,
+                        name: "FK_PersonNotification_AspNetUsers_PersonId",
+                        column: x => x.PersonId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CustomerNotification_Notifications_NotificationsId",
-                        column: x => x.NotificationsId,
+                        name: "FK_PersonNotification_Notifications_NotificationId",
+                        column: x => x.NotificationId,
                         principalTable: "Notifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -728,11 +737,6 @@ namespace Horas.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerNotification_NotificationsId",
-                table: "CustomerNotification",
-                column: "NotificationsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Messages_CustomerId",
                 table: "Messages",
                 column: "CustomerId");
@@ -771,6 +775,17 @@ namespace Horas.Data.Migrations
                 name: "IX_PaymentMethods_CustomerId",
                 table: "PaymentMethods",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonNotification_NotificationId",
+                table: "PersonNotification",
+                column: "NotificationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonNotification_PersonId_NotificationId",
+                table: "PersonNotification",
+                columns: new[] { "PersonId", "NotificationId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_SubCategoryId",
@@ -856,9 +871,6 @@ namespace Horas.Data.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "CustomerNotification");
-
-            migrationBuilder.DropTable(
                 name: "Messages");
 
             migrationBuilder.DropTable(
@@ -866,6 +878,9 @@ namespace Horas.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderStatusHistories");
+
+            migrationBuilder.DropTable(
+                name: "PersonNotification");
 
             migrationBuilder.DropTable(
                 name: "ProductSuppliers");
@@ -886,10 +901,10 @@ namespace Horas.Data.Migrations
                 name: "Carts");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Wishlists");

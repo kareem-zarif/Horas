@@ -8,10 +8,12 @@ namespace Horas.Api.Controllers
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public PaymentMethodController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public PaymentMethodController(IUOW uow, IMapper mapper, IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PaymentMethodCreateDto dto)
@@ -27,6 +29,11 @@ namespace Horas.Api.Controllers
 
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+                 message: $"Payment Mehtod has been Added successfully ({paymentMethod.PaymentType})",
+                 personId: paymentMethod.CustomerId 
+                   ));
+
                 var mapped = _mapper.Map<PaymentMethodResDto>(created);
                 return Ok(mapped);
 
@@ -80,7 +87,6 @@ namespace Horas.Api.Controllers
         {
             try
             {
-
                 var paymentMethod = await _uow.PaymentMethodRepository.GetAsync(id);
 
                 if (paymentMethod == null)
@@ -91,6 +97,10 @@ namespace Horas.Api.Controllers
                 var saved = await _uow.Complete();
                 if (saved > 0)
                 {
+                    await _mediator.Publish(new NotificationEvent(
+                       message: $"Your Payment Method ({paymentMethod.PaymentType}) has been deleted.",
+                       personId: paymentMethod.CustomerId
+                     ));
                     var mapped = _mapper.Map<PaymentMethodResDto>(deleted);
                     return Ok(mapped);
                 }
@@ -120,6 +130,11 @@ namespace Horas.Api.Controllers
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+                message: $"Your Payment Method ({paymentMethod.PaymentType}) has been updated.",
+                personId: paymentMethod.CustomerId
+              ));
+
                 var result = _mapper.Map<PaymentMethodResDto>(paymentMethod);
                 return Ok(result);
             }

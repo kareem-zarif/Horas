@@ -1,4 +1,6 @@
-﻿using Customer = Horas.Domain.Customer;
+﻿using Horas.Domain.Events;
+using MediatR;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Horas.Api.Controllers
 {
@@ -8,10 +10,12 @@ namespace Horas.Api.Controllers
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public CustomerController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public CustomerController(IUOW uow, IMapper mapper, IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -75,6 +79,11 @@ namespace Horas.Api.Controllers
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+                message: $"Welcome Your account has been created successfully ",
+                personId: created.Id
+
+              ));
                 var mapped = _mapper.Map<CustomerResDto>(created);
                 return Ok(mapped);
             }
@@ -99,6 +108,11 @@ namespace Horas.Api.Controllers
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+                 message: "Your profile has been updated successfully.",
+                 personId: updated.Id
+
+               ));
                 var mappedCome = _mapper.Map<CustomerResDto>(updated);
                 return Ok(mappedCome);
             }

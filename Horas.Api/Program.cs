@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 using System.Text;
 using Horas.Data;
 using Horas.Data.DataAccess;
@@ -7,6 +8,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Person = Horas.Domain.Person;
+=======
+using Horas.Application.Handlers;
+using Horas.Data;
+using Horas.Data.DataAccess;
+using Horas.Data.Services;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using System.Text;
+>>>>>>> origin/menna2
+
 
 namespace Horas.Api
 {
@@ -19,6 +33,13 @@ namespace Horas.Api
             // Add services to the container.
             builder.Services.ConfigData(builder.Configuration);
             builder.Services.AddAutoMapper(op => op.AddMaps(typeof(Program).Assembly));
+            builder.Services.AddMediatR(cfg =>
+             cfg.RegisterServicesFromAssemblies(
+             typeof(ReviewCreatedEventHandler).Assembly
+         ));
+
+
+
 
             #region Auth
 

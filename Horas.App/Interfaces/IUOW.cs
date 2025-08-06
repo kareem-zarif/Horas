@@ -22,6 +22,8 @@ namespace Horas.Domain.Interfaces
         public ISupplierRepo SupplierRepository { get; }
         public IAddressRepo AddressRepository { get; }
         public IProductSupplierRepo ProductSupplierRepository { get; }
+        public IPersonNotificationRepo PersonNotificationRepository { get; }
+
 
         Task<int> Complete();
     }

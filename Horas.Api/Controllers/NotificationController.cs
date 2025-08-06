@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Controllers
+﻿using Horas.Domain.Events;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -71,6 +73,7 @@
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                
                 var mapped = _mapper.Map<NotificationResDto>(created);
                 return Ok(mapped);
             }

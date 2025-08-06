@@ -22,6 +22,7 @@ namespace Horas.Data.IOC
             services.AddScoped<ISupplierRepo, SupplierRepo>();
             services.AddScoped<IAddressRepo, AddressRepo>();
             services.AddScoped<IProductSupplierRepo, ProductSupplierRepo>();
+            services.AddScoped<IPersonNotificationRepo,PersonNotificationRepo>();
 
             services.AddScoped<IUOW, UOW>();
 

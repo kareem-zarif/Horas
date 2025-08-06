@@ -18,6 +18,7 @@ namespace Horas.Data.Repos
             return _dbset
                 .Include(x => x.Customer)
                 .Include(x => x.PaymentMethod)
+<<<<<<< HEAD
                 .Include(oi => oi.OrderItems)
                 .Include(x => x.StatusStatusHistories);
         }
@@ -34,6 +35,11 @@ namespace Horas.Data.Repos
                 }
             }
             return await query.FirstOrDefaultAsync(filter);
+=======
+                .Include(oi => oi.OrderItems).
+                 Include(s =>s.StatusHistories)
+                ;
+>>>>>>> origin/menna2
         }
     }
 }
