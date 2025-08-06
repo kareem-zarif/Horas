@@ -8,7 +8,12 @@
 
         protected override IQueryable<Supplier> IncludeNavProperties(DbSet<Supplier> NavProperty)
         {
-            return _dbset.Include(x => x.ProductSuppliers).Include(x => x.Addresses);
+            return _dbset
+                .Include(x => x.ProductSuppliers)
+                    .ThenInclude(x => x.Product)
+                .Include(x => x.Addresses)
+                .AsSplitQuery() //solve cartisian problem
+                ;
         }
     }
 }

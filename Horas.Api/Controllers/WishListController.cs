@@ -54,6 +54,26 @@ namespace Horas.Api.Controllers
             }
         }
 
+        [HttpGet("byCustomer/{customerId}")]
+        public async Task<ActionResult> GetWishListByCustomerId(Guid customerId)
+        {
+            try
+            {
+                var wishlist = await _uow.WishListRepository.GetByCustomerIdAsync(customerId);
+
+                if (wishlist == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<WishListResDto>(wishlist);
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWishlist(Guid id)
         {
@@ -82,17 +102,17 @@ namespace Horas.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(WishListCreateDto dto)
         {
+            var foundWithSameCustomerId = await _uow.WishListRepository.GetByCustomerIdAsync(dto.CustomerId);
+            if (foundWithSameCustomerId != null)
+            {
+                return Conflict($"A wishlist with the same customer : {dto.CustomerId} already exists.");
+            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (dto == null)
-                return BadRequest();
 
             var wishlist = _mapper.Map<Wishlist>(dto);
-
-            if (wishlist == null)
-                return NotFound();
 
             var created = await _uow.WishListRepository.CreateAsync(wishlist);
 
@@ -104,6 +124,9 @@ namespace Horas.Api.Controllers
             }
             else
                 return BadRequest();
+
+
+
         }
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateWishlistDto dto)

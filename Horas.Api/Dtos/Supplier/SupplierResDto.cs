@@ -10,6 +10,6 @@
         public string Description { get; set; }
         public string? State { get; set; }
         public string? City { get; set; }
-        public List<ProductSupplierResDto> ProductSuppliers { get; set; }
+        public ICollection<ProductResDto> Products { get; set; }
     }
 }

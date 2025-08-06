@@ -1,8 +1,9 @@
 ﻿namespace Horas.Api.Dtos.OrderItem
 {
-    public class OrderItemResDto:OrderItemCreateDto
+    public class OrderItemResDto : OrderItemCreateDto
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
         public string? ProductName { get; set; }
+        public string? productImage { get; set; }
     }
 }

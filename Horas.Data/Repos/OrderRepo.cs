@@ -1,8 +1,10 @@
+
 ﻿
 using Horas.Domain.Interfaces.IRepos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Horas.Data.Repos
+
 {
     public class OrderRepo : BaseRepo<Order>, IOrderRepo
     {
@@ -18,7 +20,12 @@ namespace Horas.Data.Repos
             return _dbset
                 .Include(x => x.Customer)
                 .Include(x => x.PaymentMethod)
-<<<<<<< HEAD
+                .Include(x => x.StatusHistories)
+                .Include(oi => oi.OrderItems)
+                    .ThenInclude(x => x.Product)
+                 .AsSplitQuery();
+            ;
+
                 .Include(oi => oi.OrderItems)
                 .Include(x => x.StatusStatusHistories);
         }
@@ -35,11 +42,9 @@ namespace Horas.Data.Repos
                 }
             }
             return await query.FirstOrDefaultAsync(filter);
-=======
                 .Include(oi => oi.OrderItems).
                  Include(s =>s.StatusHistories)
                 ;
->>>>>>> origin/menna2
         }
     }
 }

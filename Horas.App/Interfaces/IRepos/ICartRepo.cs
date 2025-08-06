@@ -2,5 +2,6 @@
 {
     public interface ICartRepo : IBaseRepo<Cart>
     {
+        Task<Cart> GetByCustomerIdAsync(Guid custId);
     }
 }

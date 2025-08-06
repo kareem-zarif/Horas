@@ -1,6 +1,4 @@
-﻿using Horas.Data.Repos;
-
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -29,7 +27,7 @@ namespace Horas.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+                return StatusCode(500, $"{ex.Message} {ex.InnerException}");
             }
         }
         [HttpGet("{id}")]
@@ -48,7 +46,7 @@ namespace Horas.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+                return StatusCode(500, $"{ex.Message}   {ex.InnerException}");
             }
         }
         [HttpPost]
@@ -77,7 +75,7 @@ namespace Horas.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"{ex.Message} {ex.InnerException}");
             }
         }
 
@@ -118,14 +116,65 @@ namespace Horas.Api.Controllers
                 var saved = await _uow.Complete();
                 if (saved > 0)
                 {
-                    var mapped = _mapper.Map<ProductWishListRepo>(deleted);
+                    var mapped = _mapper.Map<ProductWishlistResDto>(deleted);
                     return Ok(mapped);
                 }
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, $"{ex.Message}   {ex.InnerException}");
+            }
+        }
+
+        [HttpDelete("{wishlistId}/{productId}")]
+        public async Task<IActionResult> DeleteByCustomerIdProductId(Guid wishlistId, Guid productId)
+        {
+            try
+            {
+                var productWishList = await _uow.ProductWishListRepository.GetByWishlistIdByProductId(wishlistId, productId);
+
+                if (productWishList == null)
+                    return NotFound("productWishList not found.");
+
+                var deleted = await _uow.ProductWishListRepository.DeleteByCustomerIdByProductId(wishlistId: wishlistId, productId: productId);
+
+                var saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<ProductWishlistResDto>(deleted);
+                    return Ok(mapped);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message}   {ex.InnerException}");
+            }
+        }
+
+        [HttpDelete("clear/{wishlistId}")]
+        public async Task<IActionResult> ClearByWishlistId(Guid wishlistId)
+        {
+            try
+            {
+                var foundWishListHasProduct = await _uow.ProductWishListRepository.GetAllByWishlistId(wishlistId);
+
+                if (foundWishListHasProduct == null | !foundWishListHasProduct.Any())
+                    return NotFound("No products found for this wishlist");
+
+                var deleted = await _uow.ProductWishListRepository.ClearByWishlistId(wishlistId);
+                var saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<IList<ProductWishlistResDto>>(deleted);
+                    return Ok(mapped);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message}   {ex.InnerException}");
             }
         }
     }

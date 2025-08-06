@@ -33,7 +33,7 @@ namespace Horas.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
             }
         }
 
@@ -57,13 +57,19 @@ namespace Horas.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCart([FromBody] CartCreateDto requestDto)
         {
+            var exsiting = await _uow.CartRepository.GetByCustomerIdAsync(requestDto.CustomerId);
+            if (exsiting != null)
+            {
+                return Conflict("Cart already exists for this customer.");
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -126,6 +132,26 @@ namespace Horas.Api.Controllers
             }
             else
                 return BadRequest();
+        }
+
+        [HttpGet("byCustomer/{customerId}")]
+        public async Task<ActionResult> GetCartByCustomer(Guid customerId)
+        {
+            try
+            {
+                var found = await _uow.CartRepository.GetByCustomerIdAsync(customerId);
+
+                if (found == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<CartResDto>(found);
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
+            }
         }
     }
 }
