@@ -7,6 +7,11 @@
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.HasQueryFilter(x => x.IsExist);
+
+            builder.HasOne(x=>x.Order)
+                .WithMany(x=>x.OrderItems)
+                .HasForeignKey(x=>x.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
