@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+using System.Text;
+using Horas.Data;
+using Horas.Data.DataAccess;
+using Horas.Data.Services;
+using Horas.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Person = Horas.Domain.Person;
+=======
 using Horas.Application.Handlers;
 using Horas.Data;
 using Horas.Data.DataAccess;
@@ -8,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+>>>>>>> origin/menna2
 
 
 namespace Horas.Api
@@ -55,6 +67,14 @@ namespace Horas.Api
 
             #endregion
 
+            builder.Services.AddMemoryCache();
+
+
+            #region Stripe Payment
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSetting"));
+            StripeConfiguration.ApiKey = builder.Configuration["StripeSetting:SecretKey"];
+            #endregion
+
 
             builder.Services.AddControllers();
 
@@ -74,26 +94,7 @@ namespace Horas.Api
 
             var app = builder.Build();
 
-            //#region role
-
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            //    string[] roles = { "Admin", "Customer", "Supplier" };
-
-            //    foreach (var role in roles)
-            //    {
-            //        var roleExists =await roleManager.RoleExistsAsync(role);
-            //        if (!roleExists)
-            //        {
-            //            await roleManager.CreateAsync(new IdentityRole(role));
-            //        }
-            //    }
-            //}
-            //#endregion
-
-
+         
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

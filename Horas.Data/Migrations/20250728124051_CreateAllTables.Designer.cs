@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-<<<<<<<< HEAD:Horas.Data/Migrations/20250731002915_AddOrderStatusInTblOrder.Designer.cs
-    [Migration("20250731002915_AddOrderStatusInTblOrder")]
-    partial class AddOrderStatusInTblOrder
-========
-    [Migration("20250731233131_0")]
-    partial class _0
->>>>>>>> origin/menna2:Horas.Data/Migrations/20250731233131_0.Designer.cs
+    [Migration("20250728124051_CreateAllTables")]
+    partial class CreateAllTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,6 +24,21 @@ namespace Horas.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CustomerNotification", b =>
+                {
+                    b.Property<Guid>("CustomersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("NotificationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CustomersId", "NotificationsId");
+
+                    b.HasIndex("NotificationsId");
+
+                    b.ToTable("CustomerNotification");
+                });
 
             modelBuilder.Entity("Horas.Data.Role", b =>
                 {
@@ -320,49 +330,6 @@ namespace Horas.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Horas.Domain.Entities.PersonNotification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsEnable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsExist")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("NotificationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PersonId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NotificationId");
-
-                    b.HasIndex("PersonId", "NotificationId")
-                        .IsUnique();
-
-                    b.ToTable("PersonNotification");
-                });
-
             modelBuilder.Entity("Horas.Domain.Entities.ProductSupplier", b =>
                 {
                     b.Property<Guid>("Id")
@@ -493,6 +460,9 @@ namespace Horas.Data.Migrations
                     b.Property<bool>("IsExist")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -532,9 +502,6 @@ namespace Horas.Data.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<byte>("OrderStatus")
-                        .HasColumnType("tinyint");
 
                     b.Property<Guid?>("PaymentMethodId")
                         .HasColumnType("uniqueidentifier");
@@ -1053,6 +1020,21 @@ namespace Horas.Data.Migrations
                     b.HasDiscriminator().HasValue("Supplier");
                 });
 
+            modelBuilder.Entity("CustomerNotification", b =>
+                {
+                    b.HasOne("Horas.Domain.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("CustomersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Horas.Domain.Notification", null)
+                        .WithMany()
+                        .HasForeignKey("NotificationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Horas.Data.RoleClaim", b =>
                 {
                     b.HasOne("Horas.Data.Role", null)
@@ -1143,25 +1125,6 @@ namespace Horas.Data.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Horas.Domain.Entities.PersonNotification", b =>
-                {
-                    b.HasOne("Horas.Domain.Notification", "Notification")
-                        .WithMany("PersonNotifications")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Horas.Domain.Person", "Person")
-                        .WithMany("PersonNotifications")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Notification");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Horas.Domain.Entities.ProductSupplier", b =>
@@ -1258,7 +1221,7 @@ namespace Horas.Data.Migrations
             modelBuilder.Entity("Horas.Domain.OrderStatusHistory", b =>
                 {
                     b.HasOne("Horas.Domain.Order", "Order")
-                        .WithMany("StatusStatusHistories")
+                        .WithMany("StatusHistories")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1356,16 +1319,11 @@ namespace Horas.Data.Migrations
                     b.Navigation("SubCategories");
                 });
 
-            modelBuilder.Entity("Horas.Domain.Notification", b =>
-                {
-                    b.Navigation("PersonNotifications");
-                });
-
             modelBuilder.Entity("Horas.Domain.Order", b =>
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("StatusStatusHistories");
+                    b.Navigation("StatusHistories");
                 });
 
             modelBuilder.Entity("Horas.Domain.PaymentMethod", b =>
@@ -1376,8 +1334,6 @@ namespace Horas.Data.Migrations
             modelBuilder.Entity("Horas.Domain.Person", b =>
                 {
                     b.Navigation("Addresses");
-
-                    b.Navigation("PersonNotifications");
                 });
 
             modelBuilder.Entity("Horas.Domain.Product", b =>

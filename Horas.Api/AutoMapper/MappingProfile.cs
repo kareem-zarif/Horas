@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+using Address = Horas.Domain.Address;
+using Customer = Horas.Domain.Customer;
+using PaymentMethod = Horas.Domain.PaymentMethod;
+using Product = Horas.Domain.Product;
+using Review = Horas.Domain.Review;
+=======
 using Horas.Api.Dtos.CustomerNotification;
+>>>>>>> origin/menna2
 
 public class MappingProfile : Profile
 {

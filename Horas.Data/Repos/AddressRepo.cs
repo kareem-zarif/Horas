@@ -12,4 +12,4 @@ namespace Horas.Data.Repos
             return _dbset.Include(x => x.Person);
         }
     }
-    }
+}

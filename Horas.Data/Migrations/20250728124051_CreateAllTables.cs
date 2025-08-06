@@ -6,11 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Horas.Data/Migrations/20250728124051_CreateAllTables.cs
-    public partial class CreateAllTables : Migration
-========
+
     public partial class _0 : Migration
->>>>>>>> origin/menna2:Horas.Data/Migrations/20250731233131_0.cs
+
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

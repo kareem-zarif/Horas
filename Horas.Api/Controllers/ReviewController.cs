@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+﻿using Review = Horas.Domain.Review;
+
+=======
 ﻿
+>>>>>>> origin/menna2
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
