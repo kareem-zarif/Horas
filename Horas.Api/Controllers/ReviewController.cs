@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Controllers
+﻿using Review = Horas.Domain.Review;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

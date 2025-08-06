@@ -21,10 +21,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="19.225.1" />
+    <PackageReference Include="Stripe.net" Version="48.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Horas.App\Horas.Domain.csproj" />
+    <ProjectReference Include="..\Horas.Utilities\Horas.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

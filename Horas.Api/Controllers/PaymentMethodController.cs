@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Controllers
+﻿using PaymentMethod = Horas.Domain.PaymentMethod;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

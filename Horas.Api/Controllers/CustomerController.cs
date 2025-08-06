@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Controllers
+﻿using Customer = Horas.Domain.Customer;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Controllers
+﻿using Product = Horas.Domain.Product;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -138,7 +140,7 @@
             if (found == null)
                 return NotFound();
 
-            //_mapper.Map(requestDto, found);
+            _mapper.Map(requestDto, found);
 
             if (requestDto.Images != null && requestDto.Images.Count > 0)
             {

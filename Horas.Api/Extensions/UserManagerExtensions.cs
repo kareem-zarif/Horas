@@ -7,7 +7,7 @@ namespace Horas.Api.Extensions
 {
     public static class UserManagerExtensions
     {
-        public static async Task<Person> FindUserByClaimsPrincipleWithAddress(this UserManager<Person> userManager,
+        public static async Task<Domain.Person> FindUserByClaimsPrincipleWithAddress(this UserManager<Domain.Person> userManager,
             ClaimsPrincipal user)
         {
             var email = user.FindFirstValue(ClaimTypes.Email);
@@ -16,7 +16,7 @@ namespace Horas.Api.Extensions
                 .SingleOrDefaultAsync(x => x.Email == email);
         }
 
-        public static async Task<Person> FindByEmailFromClaimsPrincipal(this UserManager<Person> userManager,
+        public static async Task<Domain.Person> FindByEmailFromClaimsPrincipal(this UserManager<Domain.Person> userManager,
             ClaimsPrincipal user)
         {
             return await userManager.Users
