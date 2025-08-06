@@ -1,6 +1,3 @@
-﻿
-using Horas.Domain.Interfaces.IRepos;
-
 namespace Horas.Data.Repos
 {
     public class ProductRepo : BaseRepo<Product>, IProductRepo
@@ -12,8 +9,11 @@ namespace Horas.Data.Repos
         protected override IQueryable<Product> IncludeNavProperties(DbSet<Product> NavProperty)
         {
             return _dbset
+                .Include(x => x.ProductSuppliers)
+                    .ThenInclude(x => x.Supplier)
                 .Include(x => x.Reviews)
-                .Include(x => x.Suppliers);
+                    .AsSplitQuery(); //to solve the cartesian problem
+                
         }
     }
 }
