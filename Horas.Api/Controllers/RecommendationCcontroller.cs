@@ -10,13 +10,13 @@ namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RecommendationCcontroller : ControllerBase
+    public class RecommendationController : ControllerBase
     {
 
         private readonly HorasDBContext _context;
         private readonly IMemoryCache _cache;
 
-        public RecommendationCcontroller(HorasDBContext context, IMemoryCache cache)
+        public RecommendationController(HorasDBContext context, IMemoryCache cache)
         {
             _context = context;
             _cache = cache;

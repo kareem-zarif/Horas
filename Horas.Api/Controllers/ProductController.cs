@@ -1,4 +1,6 @@
-﻿namespace Horas.Api.Controllers
+﻿using Product = Horas.Domain.Product;
+
+namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -6,10 +8,12 @@
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public ProductController(IUOW uow, IMapper mapper)
+        private readonly IMediator _madiator;
+        public ProductController(IUOW uow, IMapper mapper , IMediator madiator)
         {
             _uow = uow;
             _mapper = mapper;
+            _madiator = madiator;
         }
 
 
@@ -86,11 +90,27 @@
                     }
                 }
             }
-
+            Guid supplierIdFromDB = new Guid("fabd5059-4879-4ed1-ca38-08ddd201cb0d");
             var created = await _uow.ProductRepository.CreateAsync(product);
             int saved = await _uow.Complete();
+            ProductSupplier createdProductSupplier = new ProductSupplier
+            {
+                ProductId = created.Id,
+                SupplierId = supplierIdFromDB
+            };
+            await _uow.ProductSupplierRepository.CreateAsync(createdProductSupplier);
+
+            int saved2 = await _uow.Complete();
+
+            Product createdInclude;
             if (saved > 0)
             {
+           createdInclude = await _uow.ProductRepository.GetAsyncInclude(created.Id);
+                await _madiator.Publish(new NotificationEvent(
+                    $"A New Product Added: {created.Name}",
+                    supplierIdFromDB
+                    ));
+
                 var mapped = _mapper.Map<ProductResDto>(created);
                 return Ok(mapped);
             }
@@ -173,6 +193,25 @@
             int saved = await _uow.Complete();
             if (saved > 0)
             {
+                if (previousStatus != found.ApprovalStatus)
+                {
+                    string message = null;
+
+                    if (found.ApprovalStatus == ProductApprovalStatus.Approved)
+                        message = $"Product Approved {found.Name}";
+
+                    else if (found.ApprovalStatus == ProductApprovalStatus.Rejected)
+                        message = $"Product Rejected {found.Name}";
+
+                    if (message != null)
+                    {
+                        await _madiator.Publish(new ProductChangedEvent(
+                            updated.Id,
+                            message: message           
+                            ));
+                    }
+                }
+
                 var mapped = _mapper.Map<ProductResDto>(updated);
                 return Ok(mapped);
             }
@@ -208,7 +247,7 @@
         {
             try
             {
-                var found = await _uow.ProductRepository.GetAsync(id);
+                var found = await _uow.ProductRepository.GetAsyncInclude(id);
 
                 if (found == null)
                     return NotFound("Product not found");

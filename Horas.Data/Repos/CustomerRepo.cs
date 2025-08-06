@@ -18,7 +18,7 @@ namespace Horas.Data.Repos
                 .Include(c => c.Messages)
                 .Include(c => c.Reviews)
                 .Include(c => c.Reports)
-                .Include(c => c.Notifications)
+                .Include(c => c.PersonNotifications)
                 ;
         }
     }

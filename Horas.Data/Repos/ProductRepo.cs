@@ -13,6 +13,7 @@ namespace Horas.Data.Repos
                     .ThenInclude(x => x.Supplier)
                 .Include(x => x.Reviews)
                     .AsSplitQuery(); //to solve the cartesian problem
+                
         }
     }
 }

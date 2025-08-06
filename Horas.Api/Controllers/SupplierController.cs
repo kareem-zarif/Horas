@@ -6,10 +6,12 @@
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
-        public SupplierController(IUOW uow, IMapper mapper)
+        private readonly IMediator _mediator;
+        public SupplierController(IUOW uow, IMapper mapper, IMediator mediator)
         {
             _uow = uow;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
 
@@ -67,6 +69,11 @@
             var saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+                   message: $"Welcome  '{supplier.FirstName} your account has been added successfully'",
+                   personId: supplier.Id
+                 ));
+
                 var mapped = _mapper.Map<SupplierResDto>(created);
                 return Ok(mapped);
             }
@@ -97,6 +104,11 @@
             var saved = await _uow.Complete();
             if (saved > 0)
             {
+                await _mediator.Publish(new NotificationEvent(
+                    message: $"Your Acc '{found.FirstName}' has been successfully updated.",
+                    personId: found.Id
+                ));
+
                 var mapped = _mapper.Map<SupplierResDto>(updated);
                 return Ok(mapped);
             }

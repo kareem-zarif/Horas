@@ -9,5 +9,7 @@ namespace Horas.Api.Dtos.Message
         public Guid? CustomerId { get; set; }
         [ForeignKey("Supplier")]
         public Guid? SupplierId { get; set; }
+
+        public string Sendto { get; set; } 
     }
 }

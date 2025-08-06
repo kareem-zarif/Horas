@@ -27,3 +27,4 @@ global using System.Threading.Tasks;
 
 global using Horas.Domain.Interfaces;
 global using System.Reflection;
+global using System.ComponentModel.DataAnnotations;

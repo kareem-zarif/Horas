@@ -20,5 +20,6 @@
         public ShippingTypes Shipping { get; set; } = ShippingTypes.None;
         public Guid SubCategoryId { get; set; }
         public ICollection<string> Suppliers { get; set; }
+        public List<ReviewResDto> Reviews { get; set; }
     }
 }
