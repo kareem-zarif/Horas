@@ -1,5 +1,6 @@
 
 //not move to global using
+using Horas.Api.Hubs;
 using Person = Horas.Domain.Person;
 namespace Horas.Api
 {
@@ -8,6 +9,9 @@ namespace Horas.Api
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
 
             // Add services to the container.
             builder.Services.ConfigData(builder.Configuration);
@@ -56,18 +60,22 @@ namespace Horas.Api
 
 
             builder.Services.AddControllers();
+            builder.Services.AddHttpClient();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSignalR();
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngular",
                     policy => policy
-                        .AllowAnyOrigin()
+                         //.AllowAnyOrigin()
+                         .WithOrigins("http://127.0.0.1:5500") // ??? ??? ????? Angular
                         .AllowAnyHeader()
                         .AllowAnyMethod()
+                           .AllowCredentials() // ??? ???? ???? SignalR
                 );
             });
 
@@ -81,7 +89,7 @@ namespace Horas.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+         //   app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
@@ -103,6 +111,8 @@ namespace Horas.Api
 
                 await StoreContextSeed.SeedAsync(context, userManager, roleManager);
             }
+
+            app.MapHub<ChatHub>("/hub/chat");
 
             app.Run();
         }
