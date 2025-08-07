@@ -1,4 +1,7 @@
-﻿using Product = Horas.Domain.Product;
+﻿using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using Product = Horas.Domain.Product;
 
 namespace Horas.Api.Controllers
 {
@@ -8,13 +11,125 @@ namespace Horas.Api.Controllers
     {
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
         private readonly IMediator _madiator;
-        public ProductController(IUOW uow, IMapper mapper, IMediator madiator)
+        public ProductController(IUOW uow, IMapper mapper, IMediator madiator, IConfiguration config)
         {
             _uow = uow;
             _mapper = mapper;
             _madiator = madiator;
+            _config = config;
         }
+
+
+
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string q)
+        {
+            if (string.IsNullOrWhiteSpace(q))
+                return BadRequest("Search query is required.");
+
+            // 1. Get all product names
+            var productNames = (await _uow.ProductRepository.GetAllAsync())
+                .Where(p => p.IsExist)
+                .Select(p => p.Name)
+                .ToList();
+
+            if (!productNames.Any())
+                return NotFound("No products found.");
+
+            // 2. Prepare prompt for GPT
+            //    string prompt = $@"
+            //You are a smart autocomplete system for an eCommerce website.
+            //Given a user input: '{q}'
+            //And the available product names: [{string.Join(", ", productNames)}]
+            //Return the most relevant product names as autocomplete suggestions.
+            //Respond with only the names in a JSON array.";
+            string prompt = $"""
+You are an AI-powered autocomplete assistant for a large multilingual e-commerce platform that serves both B2C (individuals) and B2B (factories, suppliers).
+
+Your task is to help users find the exact products they are likely searching for, based on a large product catalog that includes electronics, clothing, furniture, industrial tools, food, cosmetics, etc.
+
+The platform supports both Arabic and English.
+
+Here is a sample list of product names:
+[{string.Join(", ", productNames.Take(1000))}]
+
+A user typed: "{q}"
+
+Your job is to:
+1. Understand the user’s intent even if they only typed 2-3 letters.
+2. Support Arabic and English input equally.
+3. Return only the most relevant product suggestions from the list.
+4. Do NOT return unrelated products.
+5. Include exact matches, partial matches, possible typos, and related terms — only if they make sense.
+6. If no reasonable match exists, return an empty list.
+
+Return a clean JSON array of up to 10 product name suggestions only — no extra explanation.
+""";
+
+
+            // 3. Prepare OpenAI request
+            var openAiApiKey = _config["OpenAI:ApiKey"];
+            var requestBody = new
+            {
+                model = "gpt-4o-mini",
+                messages = new[]
+                {
+                    new { role = "system", content = "You are a helpful assistant." },
+                    new { role = "user", content = prompt }
+                },
+                temperature = 0.2
+            };
+
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAiApiKey);
+
+            var response = await client.PostAsync(
+                "https://api.openai.com/v1/chat/completions",
+                new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
+            );
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                return StatusCode((int)response.StatusCode, $"OpenAI error: {error}");
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(responseContent);
+            var completion = doc.RootElement
+                .GetProperty("choices")[0]
+                .GetProperty("message")
+                .GetProperty("content")
+                .GetString();
+
+            try
+            {
+                // Remove markdown wrapping (like ```json ... ```)
+                var cleaned = completion.Trim().Trim('`');
+                if (cleaned.StartsWith("json"))
+                    cleaned = cleaned.Substring(4).Trim();
+
+                var suggestions = JsonConvert.DeserializeObject<List<string>>(cleaned);
+
+                return Ok(suggestions);
+            }
+            catch
+            {
+                return Ok(new { raw = completion }); // fallback
+            }
+        }
+
+
+
+
+
+
+
+
 
 
         [HttpGet]
