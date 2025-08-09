@@ -4,6 +4,7 @@ using Horas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    partial class HorasDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250806162909_SellerData")]
+    partial class SellerData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -469,7 +472,7 @@ namespace Horas.Data.Migrations
                     b.HasIndex("PersonId")
                         .IsUnique();
 
-                    b.ToTable("SellerProfiles");
+                    b.ToTable("SellerProfile");
                 });
 
             modelBuilder.Entity("Horas.Domain.Message", b =>
@@ -1245,7 +1248,7 @@ namespace Horas.Data.Migrations
                     b.HasOne("Horas.Domain.Person", "Person")
                         .WithOne("SellerProfile")
                         .HasForeignKey("Horas.Domain.Entities.SellerProfile", "PersonId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Person");

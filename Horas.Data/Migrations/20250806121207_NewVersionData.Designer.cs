@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    [Migration("20250806113311_intial")]
-    partial class intial
+    [Migration("20250806121207_NewVersionData")]
+    partial class NewVersionData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿// تحديث TokenService لإضافة معلومات إضافية في الـ JWT
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,19 +19,32 @@ namespace Horas.Data.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]!));
         }
 
-        public async Task<string> CreateToken(Person user) // Mark method as async and change return type to Task<string>
+        public async Task<string> CreateToken(Person user)
         {
-            var roles = await _userManager.GetRolesAsync(user); // Await is now valid in an async method
+            var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email ?? ""),
-                new Claim(ClaimTypes.GivenName, user.FirstName ?? "")
+                new Claim(ClaimTypes.GivenName, user.FirstName ?? ""),
+                new Claim(ClaimTypes.Surname, user.LastName ?? "")
             };
 
-
+            // إضافة الـ roles
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            // إضافة معلومة عن اكتمال الـ profile للبائع
+            if (roles.Contains("Seller"))
+            {
+                claims.Add(new Claim("IsSellerProfileComplete", user.IsSellerProfileComplete.ToString()));
+
+                // إضافة معلومات إضافية إذا كان الـ profile مكتمل
+                if (user.SellerProfile != null)
+                {
+                    claims.Add(new Claim("StoreName", user.SellerProfile.StoreName ?? ""));
+                }
+            }
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -43,7 +57,6 @@ namespace Horas.Data.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);

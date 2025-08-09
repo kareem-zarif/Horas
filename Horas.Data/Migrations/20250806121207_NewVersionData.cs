@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class intial : Migration
+    public partial class NewVersionData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
