@@ -51,8 +51,8 @@ namespace Horas.Api
 
 
             #region Stripe Payment
-            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSetting"));
-            StripeConfiguration.ApiKey = builder.Configuration["StripeSetting:SecretKey"];
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
+            StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
 
             builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<StripeSettings>>().Value);
             #endregion
