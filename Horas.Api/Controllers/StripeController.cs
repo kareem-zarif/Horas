@@ -6,7 +6,7 @@ namespace Horas.Controllers
     [ApiController]
     public class StripeController : ControllerBase
     {
-        private const string WebhookSecret = "whsec_4ac24f63a44ee4d412aa6c8fa7b88b6d277798d8d4025bb75c02b6e2659c48cd";
+        private const string WebhookSecret = "whsec_ac7a9f52ad3bd8edc39b4765f8b1b332153c92d3d6b16b75c46483cc7a366adf";
         private readonly IUOW _uow;
         private readonly StripeSettings _stripeSettings;
         private readonly IConfiguration _config;
