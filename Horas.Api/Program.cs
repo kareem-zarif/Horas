@@ -1,5 +1,6 @@
 
 //not move to global using
+using Microsoft.Extensions.Options;
 using Person = Horas.Domain.Person;
 namespace Horas.Api
 {
@@ -52,6 +53,8 @@ namespace Horas.Api
             #region Stripe Payment
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSetting"));
             StripeConfiguration.ApiKey = builder.Configuration["StripeSetting:SecretKey"];
+
+            builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<StripeSettings>>().Value);
             #endregion
 
 

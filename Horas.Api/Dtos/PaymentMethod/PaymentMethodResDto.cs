@@ -16,11 +16,11 @@ namespace Horas.Api.Dtos.PaymentMethod
         // Fawry
         public string? FawryCode { get; set; }
         public Guid CustomerId { get; set; }
-        public string CustomerName { get; set; }
         public ICollection<OrderResDto> Orders { get; set; }
         //asmaa read only
         public PaymentMethodType PaymentType { get; set; }
         public string paymentDetails { get; set; }
+
 
     }
 }

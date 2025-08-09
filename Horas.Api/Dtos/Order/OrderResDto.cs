@@ -3,7 +3,7 @@
     public class OrderResDto
     {
         public Guid Id { get; set; }
-        public int? PaymentMethodName { get; set; }
+        public int? PaymentMethodTypeNumber { get; set; } = 1;
 
         public string? CustomerName { get; set; }
         [Required]

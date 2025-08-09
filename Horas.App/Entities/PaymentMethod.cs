@@ -3,7 +3,7 @@
     public class PaymentMethod : IBaseEnt
     {
         //if orderitem is sample will allow to him cash m if order not allow cash
-        public PaymentMethodType PaymentType { get; set; }
+        public PaymentMethodType PaymentType { get; set; } = PaymentMethodType.Stripe;
         public bool IsDefault { get; set; } = false;
         //INstapay
 
