@@ -1,6 +1,4 @@
-﻿using Stripe.Checkout;
-
-namespace Horas.Controllers
+﻿namespace Horas.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -73,7 +71,8 @@ namespace Horas.Controllers
 
             },
                 Mode = "payment",
-                SuccessUrl = $"{domain}/success?orderId={orderId}",
+                //SuccessUrl = $"{domain}/success?orderId={orderId}",
+                SuccessUrl = $"{domain}/orders?orderId={orderId}",
                 CancelUrl = $"{domain}/cancel",
                 CustomerEmail = order.Customer?.Email,
                 Metadata = new Dictionary<string, string> { { "orderId", orderId } }
