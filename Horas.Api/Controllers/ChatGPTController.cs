@@ -11,8 +11,17 @@ namespace Horas.Api.Controllers
     public class ChatGPTController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string OPENAI_API_KEY = ""; 
+        private const string OPENAI_API_KEY = "";
 
+
+        // ✅ حطيت الـ Dictionary جوه الكلاس عشان يبقى متاح في الميثود
+        private static readonly Dictionary<string, string> PresetQA = new()
+        {
+            { "ما هي مواعيد العمل؟", "مواعيد العمل من السبت إلى الخميس، من 9 صباحًا حتى 9 مساءً." },
+            { "كيف يمكنني تتبع طلبي؟", "يمكنك تتبع طلبك عبر صفحة 'تتبع الطلب' باستخدام رقم الطلب." },
+            { "هل يوجد شحن دولي؟", "نعم، نوفر الشحن الدولي إلى معظم الدول." },
+            { "ما هي سياسة الاسترجاع؟", "يمكنك إرجاع المنتج خلال 14 يومًا من الاستلام إذا كان بحالته الأصلية." }
+        };
         public ChatGPTController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
@@ -21,17 +30,27 @@ namespace Horas.Api.Controllers
         [HttpPost("ask")]
         public async Task<IActionResult> AskGPT([FromBody] ChatQuestion question)
         {
-            var prompt = $"جاوب على السؤال ده بصيغة خدمة عملاء لمتجر إلكتروني: {question.Question}";
+
+            if (string.IsNullOrWhiteSpace(question?.Question))
+                return BadRequest(new { error = "السؤال مطلوب." });
+
+            // ✅ هنا هيشوف هل السؤال من الأسئلة الجاهزة
+            if (PresetQA.TryGetValue(question.Question.Trim(), out var presetAnswer))
+            {
+                return Ok(new { answer = presetAnswer });
+            }
+
+            var prompt = $"أجب على السؤال التالي بصيغة خدمة عملاء لمتجر إلكتروني. قدم الإجابة أولاً بالعربية، ثم نفس الإجابة بالإنجليزية، بدون حشو أو تكرار:\n\n{question.Question}";
 
             var requestBody = new
             {
                 model = "mistralai/mistral-7b-instruct",
                 messages = new[]
                 {
-                    new { role = "system", content = "أجب عن السؤال التالي بإجابة منطقية ومختصرة وواضحة، واذكر الإجابة أولًا بالعربية ثم نفس الإجابة بالإنجليزية." },
-                  new { role = "user", content = question.Question }
-
-                }
+                    new { role = "system", content = "أنت مساعد خدمة عملاء محترف لمتجر إلكتروني. إجابتك يجب أن تكون دقيقة ومباشرة ومختصرة. لا تضف أي معلومات غير مرتبطة بالسؤال" },
+                    new { role = "user", content = prompt }
+                },
+                temperature = 0.2
             };
 
             var requestJson = JsonSerializer.Serialize(requestBody);

@@ -1,4 +1,4 @@
-
+﻿
 //not move to global using
 using Horas.Api.Hubs;
 using Person = Horas.Domain.Person;
@@ -72,10 +72,11 @@ namespace Horas.Api
                 options.AddPolicy("AllowAngular",
                     policy => policy
                          //.AllowAnyOrigin()
-                         .WithOrigins("http://127.0.0.1:5500") // ??? ??? ????? Angular
+                         //.WithOrigins("") // حطي هنا عنوان Angular 4200
+                         .WithOrigins("http://localhost:4200")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                           .AllowCredentials() // ??? ???? ???? SignalR
+                           .AllowCredentials() // مهم جداً عشان SignalR
                 );
             });
 
@@ -89,7 +90,7 @@ namespace Horas.Api
                 app.UseSwaggerUI();
             }
 
-         //   app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 

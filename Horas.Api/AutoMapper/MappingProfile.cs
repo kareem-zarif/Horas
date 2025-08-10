@@ -158,8 +158,8 @@ public class MappingProfile : Profile
 
         CreateMap<MessageUpdateDto, Message>().ReverseMap();
         CreateMap<Message, MessageReadDto>()
-            .ForMember(dest => dest.SenderType, opt =>
-             opt.MapFrom(src => src.CustomerId != null ? "Customer" : "Supplier"))
+            //.ForMember(dest => dest.SenderType, opt =>
+            // opt.MapFrom(src => src.CustomerId != null ? "Customer" : "Supplier"))
               .ForMember(dest => dest.MessageDateTime, opt => opt.MapFrom(src => src.CreatedOn))
               .ForMember(des => des.SupplierName, opt => opt.MapFrom(src => src.Supplier != null ? $"{src.Supplier.FirstName} {src.Supplier.LastName}" : null))
               .ForMember(des => des.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? $"{src.Customer.FirstName} {src.Customer.LastName}" : null))
