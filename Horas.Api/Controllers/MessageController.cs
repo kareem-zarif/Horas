@@ -1,5 +1,7 @@
-﻿using Horas.Domain.Events;
+﻿using Horas.Api.Hubs;
+using Horas.Domain.Events;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Horas.Api.Controllers
 {
@@ -10,11 +12,13 @@ namespace Horas.Api.Controllers
         private readonly IUOW _uow;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        public MessageController(IUOW uow, IMapper mapper , IMediator mediator)
+        private readonly IHubContext<ChatHub> _hub;
+        public MessageController(IUOW uow, IMapper mapper , IMediator mediator, IHubContext<ChatHub> hub)
         {
             _uow = uow;
             _mapper = mapper;
             _mediator = mediator;
+            _hub = hub;
         }
 
 
@@ -69,7 +73,7 @@ namespace Horas.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> create([FromForm] MessageCreateDto _CreateDto)
+        public async Task<IActionResult> create([FromBody] MessageCreateDto _CreateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -79,6 +83,9 @@ namespace Horas.Api.Controllers
 
             if (saved > 0)
             {
+
+
+
                 if (_CreateDto.Sendto.ToLower() == "customer" && Message.CustomerId.HasValue)
                 {
                     await _mediator.Publish(new NotificationEvent(
@@ -94,7 +101,15 @@ namespace Horas.Api.Controllers
                     ));
                 }
 
+
                 var mapped = _mapper.Map<MessageReadDto>(created);
+                var groupName = ChatHub.GetGroupName(
+                   created.CustomerId ?? Guid.Empty,
+                   created.SupplierId ?? Guid.Empty
+                                 );
+
+                // بعت الرسالة للجروب بس
+                await _hub.Clients.Group(groupName).SendAsync("ReceiveMessage", mapped);
                 return Ok(mapped);
             }
             else
@@ -113,6 +128,8 @@ namespace Horas.Api.Controllers
             if (saved > 0)
             {
                 var mappedCome = _mapper.Map<MessageReadDto>(updated);
+                // 👇 Real-time update
+                await _hub.Clients.All.SendAsync("MessageUpdated", mappedCome);
                 return Ok(mappedCome);
             }
             else return BadRequest();
@@ -129,6 +146,9 @@ namespace Horas.Api.Controllers
                 if (saved > 0)
                 {
                     var mapped = _mapper.Map<MessageReadDto>(deleted);
+
+                    // 👇 Real-time deletion
+                    await _hub.Clients.All.SendAsync("MessageDeleted", mapped);
                     return Ok(mapped);
                 }
                 else return BadRequest();
