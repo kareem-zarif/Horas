@@ -1,5 +1,8 @@
-﻿namespace Horas.Api.Controllers
+﻿using System.Security.Claims;
+
+namespace Horas.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -20,9 +23,13 @@
         {
             try
             {
-                var foundList = await _uow.OrderRepository.GetAllAsyncInclude();
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdClaim, out var userId))
+                    return Unauthorized();
 
-                if (foundList == null)
+                var foundList = await _uow.OrderRepository.GetAllAsyncInclude(x => x.CustomerId == userId);
+
+                if (foundList == null || !foundList.Any())
                     return NotFound();
 
                 var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
@@ -34,7 +41,7 @@
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
             }
         }
 
@@ -43,9 +50,13 @@
         {
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdClaim, out var userId))
+                    return Unauthorized();
+
                 var found = await _uow.OrderRepository.GetAsyncInclude(id);
 
-                if (found == null)
+                if (found == null || found.CustomerId != userId)
                     return NotFound();
 
                 var mapped = _mapper.Map<OrderResDto>(found);
@@ -57,7 +68,7 @@
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
             }
         }
 
@@ -65,11 +76,15 @@
         [HttpPost]
         public async Task<ActionResult> Create(OrderCreateDto requestDto)
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-
             var order = _mapper.Map<Order>(requestDto);
+            order.CustomerId = userId; // Ensure customerId is set
 
             var created = await _uow.OrderRepository.CreateAsync(order);
             int saved = await _uow.Complete();
@@ -77,6 +92,15 @@
             {
                 if (!order.CustomerId.HasValue)
                     return BadRequest("CustomerId is required to create a notification.");
+
+                // Create initial OrderStatusHistory entry
+                var statusHistory = new OrderStatusHistory
+                {
+                    OrderId = created.Id,
+                    OrderStatus = OrderStatus.pending, // Initial status
+                };
+                await _uow.OrderStatusHistoryRepository.CreateAsync(statusHistory);
+                await _uow.Complete();
 
                 await _mediator.Publish(new NotificationEvent(
                     message: $" Order Created Successfully  {order.Id}",
@@ -94,9 +118,13 @@
         {
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdClaim, out var userId))
+                    return Unauthorized();
+
                 var order = await _uow.OrderRepository.GetAsync(id);
 
-                if (order == null)
+                if (order == null || order.CustomerId != userId)
                     return NotFound();
 
                 var deleted = await _uow.OrderRepository.DeleteAsync(id);
@@ -117,8 +145,14 @@
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] OrderUpdateDto dto)
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var found = await _uow.OrderRepository.GetAsyncInclude(dto.Id);
 
             var mappedGo = _mapper.Map<Order>(dto);
 
@@ -127,7 +161,7 @@
             int saved = await _uow.Complete();
             if (saved > 0)
             {
-                
+
                 var mapped = _mapper.Map<OrderResDto>(updated);
                 return Ok(mapped);
             }

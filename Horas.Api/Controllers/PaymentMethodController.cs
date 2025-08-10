@@ -1,4 +1,5 @@
-﻿using PaymentMethod = Horas.Domain.PaymentMethod;
+﻿using System.Security.Claims;
+using PaymentMethod = Horas.Domain.PaymentMethod;
 
 namespace Horas.Api.Controllers
 {
@@ -31,7 +32,7 @@ namespace Horas.Api.Controllers
             {
                 await _mediator.Publish(new NotificationEvent(
                  message: $"Payment Mehtod has been Added successfully ({paymentMethod.PaymentType})",
-                 personId: paymentMethod.CustomerId 
+                 personId: paymentMethod.CustomerId
                    ));
 
                 var mapped = _mapper.Map<PaymentMethodResDto>(created);
@@ -67,7 +68,11 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var paymentMethods = await _uow.PaymentMethodRepository.GetAllAsyncInclude();
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdClaim, out var userId))
+                    return Unauthorized();
+
+                var paymentMethods = await _uow.PaymentMethodRepository.GetAllAsyncInclude(x => x.CustomerId == userId);
 
                 if (paymentMethods == null || !paymentMethods.Any())
                     return NotFound();

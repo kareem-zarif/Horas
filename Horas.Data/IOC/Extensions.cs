@@ -13,16 +13,18 @@ namespace Horas.Data.IOC
 
             //addscoped => Repos/UOW
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>)); ////resolve and inject all repo automatically when create dbcontext
+
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<ISubCategoryRepo, SubCategoryRepo>();
-            services.AddScoped<ICustomerRepo,CustomerRepo>();
+            services.AddScoped<ICustomerRepo, CustomerRepo>();
             services.AddScoped<ICartRepo, CartRepo>();
             services.AddScoped<ICartItemRepo, CartItemRepo>();
             services.AddScoped<ISupplierRepo, SupplierRepo>();
             services.AddScoped<IAddressRepo, AddressRepo>();
             services.AddScoped<IProductSupplierRepo, ProductSupplierRepo>();
-            services.AddScoped<IPersonNotificationRepo,PersonNotificationRepo>();
+            services.AddScoped<IPersonNotificationRepo, PersonNotificationRepo>();
+            services.AddScoped<IPaymentMethodRepo, PaymentMethodRepo>();
 
             services.AddScoped<IUOW, UOW>();
 
