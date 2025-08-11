@@ -61,7 +61,7 @@
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CartItemCreateDto requestDto)
+        public async Task<IActionResult> Create([FromBody] CartItemCreateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -84,7 +84,7 @@
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromForm] CartItemUpdateDto requestDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] CartItemUpdateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -93,6 +93,9 @@
 
             if (found == null)
                 return NotFound();
+
+            // Set the id from the URL to ensure consistency
+            requestDto.Id = id;
 
             var cartItem = _mapper.Map<CartItem>(requestDto);
 
@@ -131,6 +134,64 @@
             }
             else
                 return BadRequest();
+        }
+
+        [HttpGet("{CartId}/{ProductId}")]
+        public async Task<ActionResult> GetByCartIdAndProductId(Guid CartId, Guid productId)
+        {
+            try
+            {
+                var found = await _uow.CartItemRepository.GetByCartIdByProduct(CartId, productId);
+
+                if (found == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<CartItemResDto>(found);
+
+                if (mapped == null)
+                    return NotFound();
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
+            }
+        }
+
+        [HttpDelete("cart/{cartId}")]
+        public async Task<IActionResult> DeleteAllByCartId(Guid cartId)
+        {
+            try
+            {
+                // Find all cart items for the given cartId
+                var cartItems = await _uow.CartItemRepository.GetByCartIdAsync(cartId);
+
+                if (cartItems == null || !cartItems.Any())
+                    return NotFound("No cart items found for this cart.");
+
+                IList<CartItemResDto> deletedItems = new List<CartItemResDto>();
+                // Delete all cart items
+                foreach (var item in cartItems)
+                {
+                    await _uow.CartItemRepository.DeleteAsync(item.Id);
+                    deletedItems.Add(_mapper.Map<CartItemResDto>(item));
+                }
+
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    return Ok(deletedItems);
+                }
+                else
+                {
+                    return BadRequest("Failed to delete cart items.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
+            }
         }
     }
 }

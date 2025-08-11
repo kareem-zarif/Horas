@@ -10,6 +10,7 @@
         //nav
         public virtual Customer Customer { get; set; }
         public virtual Supplier Supplier { get; set; }
+        public string SenderType { get; set; }
         //IbaseEnt
         public Guid Id { get; set; }
         public bool IsExist { get; set; } = true;

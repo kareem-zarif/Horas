@@ -4,6 +4,7 @@ using Horas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    partial class HorasDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250810191226_addSenderType")]
+    partial class addSenderType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -429,49 +432,6 @@ namespace Horas.Data.Migrations
                     b.ToTable("ProductWishLists");
                 });
 
-            modelBuilder.Entity("Horas.Domain.Entities.SellerProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BusinessType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PersonId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StoreLogoUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StoreName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WebsiteUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PersonId")
-                        .IsUnique();
-
-                    b.ToTable("SellerProfiles");
-                });
-
             modelBuilder.Entity("Horas.Domain.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -766,9 +726,6 @@ namespace Horas.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsExist")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSellerProfileComplete")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -1245,17 +1202,6 @@ namespace Horas.Data.Migrations
                     b.Navigation("WishList");
                 });
 
-            modelBuilder.Entity("Horas.Domain.Entities.SellerProfile", b =>
-                {
-                    b.HasOne("Horas.Domain.Person", "Person")
-                        .WithOne("SellerProfile")
-                        .HasForeignKey("Horas.Domain.Entities.SellerProfile", "PersonId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Person");
-                });
-
             modelBuilder.Entity("Horas.Domain.Message", b =>
                 {
                     b.HasOne("Horas.Domain.Customer", "Customer")
@@ -1432,8 +1378,6 @@ namespace Horas.Data.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("PersonNotifications");
-
-                    b.Navigation("SellerProfile");
                 });
 
             modelBuilder.Entity("Horas.Domain.Product", b =>

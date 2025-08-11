@@ -42,6 +42,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.IdentityModel.Tokens;
 global using Stripe;
+global using Stripe.Checkout;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Text;

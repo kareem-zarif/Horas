@@ -1,6 +1,4 @@
-﻿using Horas.Domain;
-
-namespace Horas.Api.Dtos.OrderStatusHistory
+﻿namespace Horas.Api.Dtos.OrderStatusHistory
 {
     public class OrderStatusHistoryCreateDto
     {

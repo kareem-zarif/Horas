@@ -54,11 +54,11 @@ public class MappingProfile : Profile
 
         #region CartItem
         CreateMap<CartItemCreateDto, CartItem>()
-            .ForPath(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
             .ReverseMap();
 
         CreateMap<CartItemUpdateDto, CartItem>()
-            .ForPath(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+            .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
             .ReverseMap();
 
         CreateMap<CartItem, CartItemResDto>()
@@ -158,8 +158,8 @@ public class MappingProfile : Profile
 
         CreateMap<MessageUpdateDto, Message>().ReverseMap();
         CreateMap<Message, MessageReadDto>()
-            .ForMember(dest => dest.SenderType, opt =>
-             opt.MapFrom(src => src.CustomerId != null ? "Customer" : "Supplier"))
+            //.ForMember(dest => dest.SenderType, opt =>
+            // opt.MapFrom(src => src.CustomerId != null ? "Customer" : "Supplier"))
               .ForMember(dest => dest.MessageDateTime, opt => opt.MapFrom(src => src.CreatedOn))
               .ForMember(des => des.SupplierName, opt => opt.MapFrom(src => src.Supplier != null ? $"{src.Supplier.FirstName} {src.Supplier.LastName}" : null))
               .ForMember(des => des.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? $"{src.Customer.FirstName} {src.Customer.LastName}" : null))
@@ -217,7 +217,7 @@ public class MappingProfile : Profile
         CreateMap<Order, OrderReadDto>().ReverseMap();
         CreateMap<Order, OrderResDto>()
                    .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? $"{src.Customer.FirstName} {src.Customer.LastName}" : null))
-                   .ForMember(dest => dest.PaymentMethodName, opt => opt.MapFrom(src => src.PaymentMethod != null ? (int?)src.PaymentMethod.PaymentType : null))
+                   .ForMember(dest => dest.PaymentMethodTypeNumber, opt => opt.MapFrom(src => src.PaymentMethod != null ? (int?)src.PaymentMethod.PaymentType : null))
                    .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
                     .ForMember(des => des.OrderStatusHistory, opt => opt.MapFrom(src => src.StatusHistories))
                    //.ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
@@ -231,7 +231,7 @@ public class MappingProfile : Profile
         CreateMap<OrderItem, OrderItemReadDto>().ReverseMap();
         CreateMap<OrderItem, OrderItemResDto>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
-             .ForMember(dest => dest.productImage, opt => opt.MapFrom(src => src.Product.ProductPicsPathes.FirstOrDefault()))
+            .ForMember(dest => dest.productImage, opt => opt.MapFrom(src => src.Product.ProductPicsPathes.FirstOrDefault()))
             .ReverseMap();
         #endregion
 
@@ -252,7 +252,6 @@ public class MappingProfile : Profile
         CreateMap<PaymentMethod, PaymentMethodUpdateDto>().ReverseMap();
 
         CreateMap<PaymentMethod, PaymentMethodResDto>()
-            .ForMember(des => des.CustomerName, opt => opt.MapFrom(src => $"{src.Customer.FirstName} {src.Customer.LastName}"))
             .ForMember(dest => dest.Orders, opt => opt.MapFrom(src => src.Orders))
             .ForMember(dest => dest.paymentDetails, opt => opt.MapFrom((src, dest) =>
                 src.PaymentType == PaymentMethodType.VisaCard
