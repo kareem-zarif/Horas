@@ -1,14 +1,28 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 namespace Horas.Domain
 {
-    public abstract class Person : BaseEnt
+    public class Person : IdentityUser<Guid>, IBaseEnt
     {
-        //not write password and email attributes :: is built in IdentityFramork we will use 
-        public string UserName { get; set; }
 
-        [Required, MinLength(11), MaxLength(13), Phone, RegularExpression(@"^(010|011|012|15)\d{8,10}$", ErrorMessage = "Phone number must start with 010, 011,015, or 012 and be between 11 and 13 digits")]
-        public string Phone { get; set; }
+        //authentication properties
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public bool IsSellerProfileComplete { get; set; } = false;
+        public virtual SellerProfile? SellerProfile { get; set; }
+
+
         //nav
         public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
+        public virtual ICollection<PersonNotification> PersonNotifications { get; set; } = new HashSet<PersonNotification>();
+
+
+        //----------------------------------IbaseEnt
+        //public Guid Id { get; set; }
+        public bool IsExist { get; set; } = true;
+        public Guid? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }
