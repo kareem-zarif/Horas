@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-#nullable disable
+﻿#nullable disable
 
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class message : Migration
+    public partial class addSenderType : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,7 +11,8 @@ namespace Horas.Data.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "SenderType",
                 table: "Messages",
-                type: "nvarchar(max)",
+                type: "nvarchar(50)",
+                maxLength: 50,
                 nullable: false,
                 defaultValue: "");
         }

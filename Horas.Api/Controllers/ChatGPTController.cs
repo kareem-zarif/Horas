@@ -1,7 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Horas.Api.Controllers
@@ -11,7 +8,7 @@ namespace Horas.Api.Controllers
     public class ChatGPTController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string OPENAI_API_KEY = "";
+        private const string OPENAI_API_KEY = "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";
 
 
         // ✅ حطيت الـ Dictionary جوه الكلاس عشان يبقى متاح في الميثود
@@ -79,5 +76,5 @@ namespace Horas.Api.Controllers
         }
     }
 
- 
+
 }

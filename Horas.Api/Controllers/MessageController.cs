@@ -1,6 +1,4 @@
 ﻿using Horas.Api.Hubs;
-using Horas.Domain.Events;
-using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Horas.Api.Controllers
@@ -13,7 +11,7 @@ namespace Horas.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IHubContext<ChatHub> _hub;
-        public MessageController(IUOW uow, IMapper mapper , IMediator mediator, IHubContext<ChatHub> hub)
+        public MessageController(IUOW uow, IMapper mapper, IMediator mediator, IHubContext<ChatHub> hub)
         {
             _uow = uow;
             _mapper = mapper;
@@ -79,7 +77,7 @@ namespace Horas.Api.Controllers
                 return BadRequest();
             var Message = _mapper.Map<Message>(_CreateDto);
             var created = await _uow.MessageRepository.CreateAsync(Message);
-            int saved  = await _uow.Complete();
+            int saved = await _uow.Complete();
 
             if (saved > 0)
             {

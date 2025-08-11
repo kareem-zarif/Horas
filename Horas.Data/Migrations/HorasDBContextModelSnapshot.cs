@@ -460,7 +460,8 @@ namespace Horas.Data.Migrations
 
                     b.Property<string>("SenderType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("SupplierId")
                         .HasColumnType("uniqueidentifier");
