@@ -1,13 +1,11 @@
-﻿using Horas.Api.Dtos.CustomerNotification;
-
-namespace Horas.Api.Dtos.Customer
+﻿namespace Horas.Api.Dtos.Customer
 {
     public class CustomerResDto
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         public int OrdersCount { get; set; }
         public List<OrderReadDto> Orders { get; set; }

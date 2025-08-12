@@ -22,7 +22,7 @@ namespace Horas.Api.Dtos.PaymentMethod
 
         // Vodafone / Orange Cash
         [Phone, MinLength(11), MaxLength(13)]
-        [RegularExpression(@"^(010|011|012|015)\d{8,10}$", ErrorMessage = "Phone number must start with 010, 011, 012, or 015")]
+        [RegularExpression(@"^(010|011|012|015)\d{8,10}$", ErrorMessage = "PhoneNumber number must start with 010, 011, 012, or 015")]
         public string? PhoneNumber { get; set; }
 
         // Fawry

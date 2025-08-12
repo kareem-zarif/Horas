@@ -135,19 +135,22 @@ public class MappingProfile : Profile
 
 
         #region Customer
-
-        CreateMap<CustomerCreateDto, Customer>().ReverseMap();
-        CreateMap<CustomerUpdateDto, Customer>().ReverseMap();
-        CreateMap<CustomerReadDto, Customer>().ReverseMap();
+        CreateMap<CustomerCreateDto, Customer>()
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ReverseMap();
+        CreateMap<CustomerUpdateDto, Customer>()
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ReverseMap();
+        CreateMap<Customer, CustomerReadDto>()
+            //.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ReverseMap();
         CreateMap<Customer, CustomerResDto>()
             .ForMember(dest => dest.OrdersCount, opt => opt.MapFrom(src => src.Orders != null ? src.Orders.Count : 0))
             .ForMember(dest => dest.PersonNotification, opt => opt.MapFrom(src => src.PersonNotifications))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
 
             .ReverseMap();
 
-        //CreateMap<CustomerResDto, Customer>()
-        //.ForMember(dest => dest.Orders.Count, opt => opt.MapFrom(src => src.OrdersCount)).ReverseMap();
-        // ForMember(dest => dest.MessagesCount, opt => opt.MapFrom(src => src.Messages.Count)).ReverseMap();
         #endregion
 
 
@@ -158,8 +161,8 @@ public class MappingProfile : Profile
 
         CreateMap<MessageUpdateDto, Message>().ReverseMap();
         CreateMap<Message, MessageReadDto>()
-            //.ForMember(dest => dest.SenderType, opt =>
-            // opt.MapFrom(src => src.CustomerId != null ? "Customer" : "Supplier"))
+              //.ForMember(dest => dest.SenderType, opt =>
+              // opt.MapFrom(src => src.CustomerId != null ? "Customer" : "Supplier"))
               .ForMember(dest => dest.MessageDateTime, opt => opt.MapFrom(src => src.CreatedOn))
               .ForMember(des => des.SupplierName, opt => opt.MapFrom(src => src.Supplier != null ? $"{src.Supplier.FirstName} {src.Supplier.LastName}" : null))
               .ForMember(des => des.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? $"{src.Customer.FirstName} {src.Customer.LastName}" : null))
@@ -172,6 +175,8 @@ public class MappingProfile : Profile
         CreateMap<Review, ReviewCreateDto>().ReverseMap();
         CreateMap<Review, ReviewResDto>()
         .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+        .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => $"{src.Customer.FirstName} {src.Customer.LastName}"))
+        .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
         .ReverseMap();
         #endregion
 

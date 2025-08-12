@@ -14,7 +14,7 @@
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Phone number is required")]
+        [Required(ErrorMessage = "PhoneNumber number is required")]
         [RegularExpression(@"^(\+2|002|02|01)[0-9]{8,11}$", ErrorMessage = "Please enter a valid Egyptian phone number (01XXXXXXXX, +201XXXXXXXX, or 002XXXXXXXX)")]
         public string PhoneNumber { get; set; }
 

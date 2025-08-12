@@ -318,26 +318,27 @@ No explanation, no extra formatting.
                     }
                 }
             }
-            Guid supplierIdFromDB = new Guid("fabd5059-4879-4ed1-ca38-08ddd201cb0d");
+            //Guid supplierIdFromDB = new Guid("fabd5059-4879-4ed1-ca38-08ddd201cb0d"); 
             var created = await _uow.ProductRepository.CreateAsync(product);
             int saved = await _uow.Complete();
-            ProductSupplier createdProductSupplier = new ProductSupplier
-            {
-                ProductId = created.Id,
-                SupplierId = supplierIdFromDB
-            };
-            await _uow.ProductSupplierRepository.CreateAsync(createdProductSupplier);
+            //ProductSupplier createdProductSupplier = new ProductSupplier
+            //{
+            //    ProductId = created.Id,
+            //    SupplierId = supplierIdFromDB
+            //};
+            //await _uow.ProductSupplierRepository.CreateAsync(createdProductSupplier);
 
-            int saved2 = await _uow.Complete();
+            //int saved2 = await _uow.Complete();
 
-            Product createdInclude;
+            //Product createdInclude;
+
             if (saved > 0)
             {
-                createdInclude = await _uow.ProductRepository.GetAsyncInclude(created.Id);
-                await _madiator.Publish(new NotificationEvent(
-                    $"A New Product Added: {created.Name}",
-                    supplierIdFromDB
-                    ));
+                //createdInclude = await _uow.ProductRepository.GetAsyncInclude(created.Id);
+                //await _madiator.Publish(new NotificationEvent(
+                //    $"A New Product Added: {created.Name}",
+                //    supplierIdFromDB
+                //    ));
 
                 var mapped = _mapper.Map<ProductResDto>(created);
                 return Ok(mapped);

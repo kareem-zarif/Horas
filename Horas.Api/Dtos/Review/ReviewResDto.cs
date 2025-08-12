@@ -6,6 +6,8 @@
         public int Rating { get; set; }
         public string? Comment { get; set; }
         public string ProductName { get; set; }
-        
+        public Guid CustomerId { get; set; }
+        public string CustomerName { get; set; }
+
     }
 }
