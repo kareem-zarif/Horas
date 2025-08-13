@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualStudio.Services.Aad;
 
 namespace Horas.Data.DataAccess;
 
@@ -8,7 +7,7 @@ public class StoreContextSeed
     public static async Task SeedAsync(HorasDBContext context, UserManager<Person> userManager, RoleManager<Role> roleManager)
     {
         // تم تبسيط الأدوار - إزالة PendingSeller
-        string[] roles = { "Admin", "Seller", "Customer" };
+        string[] roles = { "Admin", "Supplier", "Customer" };
 
         // إنشاء الأدوار إن لم تكن موجودة
         foreach (var role in roles)

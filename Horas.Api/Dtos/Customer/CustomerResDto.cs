@@ -6,7 +6,8 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
-
+        public string? State { get; set; }
+        public string? City { get; set; }
         public int OrdersCount { get; set; }
         public List<OrderReadDto> Orders { get; set; }
         public List<PaymentMethodResDto> PaymentMethods { get; set; }

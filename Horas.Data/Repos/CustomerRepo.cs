@@ -11,6 +11,7 @@ namespace Horas.Data.Repos
         protected override IQueryable<Customer> IncludeNavProperties(DbSet<Customer> dbSet)
         {
             return _dbset
+                .Include(x => x.Addresses)
                 .Include(c => c.Orders)
                 .Include(c => c.Cart)
                 .Include(c => c.Wishlist)

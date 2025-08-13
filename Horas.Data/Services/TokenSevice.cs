@@ -37,13 +37,13 @@ namespace Horas.Data.Services
             // إضافة معلومة عن اكتمال الـ profile للبائع
             if (roles.Contains("Seller"))
             {
-                claims.Add(new Claim("IsSellerProfileComplete", user.IsSellerProfileComplete.ToString()));
+                //claims.Add(new Claim("IsSellerProfileComplete", user.IsSellerProfileComplete.ToString()));
 
-                // إضافة معلومات إضافية إذا كان الـ profile مكتمل
-                if (user.SellerProfile != null)
-                {
-                    claims.Add(new Claim("StoreName", user.SellerProfile.StoreName ?? ""));
-                }
+                //// إضافة معلومات إضافية إذا كان الـ profile مكتمل
+                //if (user.SellerProfile != null)
+                //{
+                //    claims.Add(new Claim("StoreName", user.SellerProfile.StoreName ?? ""));
+                //}
             }
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

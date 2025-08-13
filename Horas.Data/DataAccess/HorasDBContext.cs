@@ -25,11 +25,12 @@ namespace Horas.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            modelBuilder.Entity<Person>()
-            .HasOne(p => p.SellerProfile)
-            .WithOne(sp => sp.Person) // ?? ???? ?? ????? ??? navigation property ?? ???????
-            .HasForeignKey<SellerProfile>(sp => sp.PersonId)
-            .OnDelete(DeleteBehavior.NoAction); // ?? ??? ?? ????? ???? ???? ???????
+
+            //modelBuilder.Entity<Person>()
+            //.HasOne(p => p.SellerProfile)
+            //.WithOne(sp => sp.Person) // ?? ???? ?? ????? ??? navigation property ?? ???????
+            //.HasForeignKey<SellerProfile>(sp => sp.PersonId)
+            //.OnDelete(DeleteBehavior.NoAction); // ?? ??? ?? ????? ???? ???? ???????
 
             base.OnModelCreating(modelBuilder);
         }
@@ -83,7 +84,7 @@ namespace Horas.Data
         public virtual DbSet<PersonNotification> PersonNotification { get; set; }
 
         public virtual DbSet<ProductSupplier> ProductSuppliers { get; set; }
-        public DbSet<SellerProfile> SellerProfiles { get; set; }
+        //public DbSet<SellerProfile> SellerProfiles { get; set; }
 
 
     }

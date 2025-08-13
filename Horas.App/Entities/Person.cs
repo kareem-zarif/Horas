@@ -8,8 +8,8 @@ namespace Horas.Domain
         //authentication properties
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public bool IsSellerProfileComplete { get; set; } = false;
-        public virtual SellerProfile? SellerProfile { get; set; }
+        //public bool IsSellerProfileComplete { get; set; } = false;
+        //public virtual SellerProfile? SellerProfile { get; set; }
 
 
         //nav

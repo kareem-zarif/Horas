@@ -7,6 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CustomFilter\**" />
+    <Content Remove="CustomFilter\**" />
+    <EmbeddedResource Remove="CustomFilter\**" />
+    <None Remove="CustomFilter\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ProfileSellerController.cs" />
+    <Compile Remove="Dtos\AccountDto\AddressDto.cs" />
+    <Compile Remove="Dtos\AccountDto\RegisterDto.cs" />
+    <Compile Remove="Dtos\AccountDto\SellerProfileDto.cs" />
+    <Compile Remove="Dtos\Customer\CustomerCreateDto.cs" />
+    <Compile Remove="Dtos\Supplier\SupplierCreateDto.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="15.0.1" />
 
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.69.0.3746" />

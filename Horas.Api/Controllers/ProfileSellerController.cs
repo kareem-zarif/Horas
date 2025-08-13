@@ -15,65 +15,65 @@ namespace Horas.Api.Controllers
 
         [HttpPost("complete")]
         [Authorize(Roles = "Seller")] // فقط التحقق من الـ Role, بدون التحقق من اكتمال الـ Profile
-        public async Task<IActionResult> CompleteSellerProfile([FromBody] SellerProfileDto dto)
-        {
-            var userId = User.GetUserId();
-            var person = await _context.Users
-                .Include(u => u.SellerProfile) // إضافة Include للتأكد من جلب الـ Profile
-                .FirstOrDefaultAsync(p => p.Id == userId);
+        //public async Task<IActionResult> CompleteSellerProfile([FromBody] SellerProfileDto dto)
+        //{
+        //    var userId = User.GetUserId();
+        //    var person = await _context.Users
+        //        .Include(u => u.SellerProfile) // إضافة Include للتأكد من جلب الـ Profile
+        //        .FirstOrDefaultAsync(p => p.Id == userId);
 
-            if (person == null)
-                return NotFound("User not found.");
+        //    if (person == null)
+        //        return NotFound("User not found.");
 
-            // التحقق من أن المستخدم هو بائع
-            if (!User.IsInRole("Seller"))
-                return Forbid("You are not authorized as a seller.");
+        //    // التحقق من أن المستخدم هو بائع
+        //    if (!User.IsInRole("Seller"))
+        //        return Forbid("You are not authorized as a seller.");
 
-            // التحقق من عدم اكتمال الـ Profile مسبقاً
-            if (person.SellerProfile != null && person.IsSellerProfileComplete)
-                return BadRequest(new { message = "Profile already completed." });
+        //    // التحقق من عدم اكتمال الـ Profile مسبقاً
+        //    if (person.SellerProfile != null && person.IsSellerProfileComplete)
+        //        return BadRequest(new { message = "Profile already completed." });
 
-            // إنشاء أو تحديث الـ Profile
-            SellerProfile profile;
+        //    // إنشاء أو تحديث الـ Profile
+        //    SellerProfile profile;
 
-            if (person.SellerProfile == null)
-            {
-                // إنشاء profile جديد
-                profile = new SellerProfile
-                {
-                    Id = Guid.NewGuid(),
-                    PersonId = person.Id,
-                    StoreName = dto.StoreName,
-                    BusinessType = dto.BusinessType,
-                    Description = dto.Description,
-                    PhoneNumber = dto.PhoneNumber,
-                    Address = dto.Address,
-                    WebsiteUrl = dto.WebsiteUrl,
-                    StoreLogoUrl = dto.StoreLogoUrl
-                };
+        //    if (person.SellerProfile == null)
+        //    {
+        //        // إنشاء profile جديد
+        //        profile = new SellerProfile
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            PersonId = person.Id,
+        //            StoreName = dto.StoreName,
+        //            BusinessType = dto.BusinessType,
+        //            Description = dto.Description,
+        //            PhoneNumber = dto.PhoneNumber,
+        //            Address = dto.Address,
+        //            WebsiteUrl = dto.WebsiteUrl,
+        //            StoreLogoUrl = dto.StoreLogoUrl
+        //        };
 
-                person.SellerProfile = profile;
-                _context.SellerProfiles.Add(profile);
-            }
-            else
-            {
-                // تحديث الـ profile الموجود
-                person.SellerProfile.StoreName = dto.StoreName;
-                person.SellerProfile.BusinessType = dto.BusinessType;
-                person.SellerProfile.Description = dto.Description;
-                person.SellerProfile.PhoneNumber = dto.PhoneNumber;
-                person.SellerProfile.Address = dto.Address;
-                person.SellerProfile.WebsiteUrl = dto.WebsiteUrl;
-                person.SellerProfile.StoreLogoUrl = dto.StoreLogoUrl;
-            }
+        //        person.SellerProfile = profile;
+        //        _context.SellerProfiles.Add(profile);
+        //    }
+        //    else
+        //    {
+        //        // تحديث الـ profile الموجود
+        //        person.SellerProfile.StoreName = dto.StoreName;
+        //        person.SellerProfile.BusinessType = dto.BusinessType;
+        //        person.SellerProfile.Description = dto.Description;
+        //        person.SellerProfile.PhoneNumber = dto.PhoneNumber;
+        //        person.SellerProfile.Address = dto.Address;
+        //        person.SellerProfile.WebsiteUrl = dto.WebsiteUrl;
+        //        person.SellerProfile.StoreLogoUrl = dto.StoreLogoUrl;
+        //    }
 
-            // تحديد أن الـ Profile مكتمل
-            person.IsSellerProfileComplete = true;
+        //    // تحديد أن الـ Profile مكتمل
+        //    person.IsSellerProfileComplete = true;
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Seller profile completed successfully." });
-        }
+        //    return Ok(new { message = "Seller profile completed successfully." });
+        //}
 
         // إضافة endpoint للتحقق من حالة الـ profile
         //[HttpGet("status")]

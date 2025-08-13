@@ -11,6 +11,10 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        #region Account
+        CreateMap<CustomerRegisterDto, Customer>().ReverseMap();
+        CreateMap<SupplierRegisterDto, Supplier>().ReverseMap();
+        #endregion
 
         #region Product
         CreateMap<ProductCreateDto, Product>().ReverseMap();
@@ -73,22 +77,20 @@ public class MappingProfile : Profile
 
 
         #region Supplier
-        CreateMap<SupplierCreateDto, Supplier>()
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
-            .ReverseMap();
+        //create from ACCount/RegisterDto
 
         CreateMap<SupplierUpdateDto, Supplier>()
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ReverseMap();
 
         CreateMap<Supplier, SupplierResDto>()
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.State, opt => opt.MapFrom(src =>
              src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().State : null))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src =>
              src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().City : null))
-            .ForMember(des => des.Products, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Product)))
+            //.ForMember(des => des.Products, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Product)))
             .ReverseMap();
         #endregion
 
@@ -135,9 +137,8 @@ public class MappingProfile : Profile
 
 
         #region Customer
-        CreateMap<CustomerCreateDto, Customer>()
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-            .ReverseMap();
+        //create from ACCount/RegisterDto
+
         CreateMap<CustomerUpdateDto, Customer>()
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ReverseMap();
@@ -148,7 +149,10 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.OrdersCount, opt => opt.MapFrom(src => src.Orders != null ? src.Orders.Count : 0))
             .ForMember(dest => dest.PersonNotification, opt => opt.MapFrom(src => src.PersonNotifications))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-
+            .ForMember(dest => dest.State, opt => opt.MapFrom(src =>
+             src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().State : null))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src =>
+             src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().City : null))
             .ReverseMap();
 
         #endregion

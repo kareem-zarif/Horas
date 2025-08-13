@@ -1,7 +1,4 @@
-﻿
-// Do not add to globbal usings
-using Customer = Horas.Domain.Customer;
-
+﻿// Do not add to globbal usings
 namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -68,29 +65,30 @@ namespace Horas.Api.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> create([FromForm] CustomerCreateDto _CreateDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
+        //post from Account / Post / Supplier
+        //[HttpPost]
+        //public async Task<IActionResult> create([FromForm] CustomerCreateDto _CreateDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest();
 
-            var Customer = _mapper.Map<Customer>(_CreateDto);
-            var created = await _uow.CustomerRepository.CreateAsync(Customer);
-            int saved = await _uow.Complete();
-            if (saved > 0)
-            {
-                await _mediator.Publish(new NotificationEvent(
-                message: $"Welcome Your account has been created successfully ",
-                personId: created.Id
+        //    var Customer = _mapper.Map<Customer>(_CreateDto);
+        //    var created = await _uow.CustomerRepository.CreateAsync(Customer);
+        //    int saved = await _uow.Complete();
+        //    if (saved > 0)
+        //    {
+        //        await _mediator.Publish(new NotificationEvent(
+        //        message: $"Welcome Your account has been created successfully ",
+        //        personId: created.Id
 
-              ));
-                var mapped = _mapper.Map<CustomerResDto>(created);
-                return Ok(mapped);
-            }
-            else
-                return BadRequest();
+        //      ));
+        //        var mapped = _mapper.Map<CustomerResDto>(created);
+        //        return Ok(mapped);
+        //    }
+        //    else
+        //        return BadRequest();
 
-        }
+        //}
 
         [HttpPut]
         public async Task<IActionResult> Update(CustomerUpdateDto requestDto)

@@ -18,7 +18,7 @@
                 400 => "Bad request , you have Made",
                 401 => "Authorized , you are not",
                 404 => "Resource Found , it was not",
-                500 => "Server Errors are the dark side .mahmoud abdullatif  ",
+                500 => "Server Errors .mahmoud abdullatif  ",
                 _ => " * "
             };
         }

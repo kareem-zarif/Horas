@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entities\SellerProfile.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Interfaces\IUtilities\" />
   </ItemGroup>
 

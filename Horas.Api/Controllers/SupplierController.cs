@@ -56,30 +56,31 @@
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] SupplierCreateDto supplierCreateDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
+        //from Accoount/Register Customer
+        //[HttpPost]
+        //public async Task<IActionResult> Create([FromBody] SupplierRegisterDto supplierCreateDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest();
 
-            var supplier = _mapper.Map<Supplier>(supplierCreateDto);
+        //    var supplier = _mapper.Map<Supplier>(supplierCreateDto);
 
-            var created = await _uow.SupplierRepository.CreateAsync(supplier);
+        //    var created = await _uow.SupplierRepository.CreateAsync(supplier);
 
-            var saved = await _uow.Complete();
-            if (saved > 0)
-            {
-                await _mediator.Publish(new NotificationEvent(
-                   message: $"Welcome  '{supplier.FirstName} your account has been added successfully'",
-                   personId: supplier.Id
-                 ));
+        //    var saved = await _uow.Complete();
+        //    if (saved > 0)
+        //    {
+        //        await _mediator.Publish(new NotificationEvent(
+        //           message: $"Welcome  '{supplier.FirstName} your account has been added successfully'",
+        //           personId: supplier.Id
+        //         ));
 
-                var mapped = _mapper.Map<SupplierResDto>(created);
-                return Ok(mapped);
-            }
-            else
-                return BadRequest();
-        }
+        //        var mapped = _mapper.Map<SupplierResDto>(created);
+        //        return Ok(mapped);
+        //    }
+        //    else
+        //        return BadRequest();
+        //}
 
 
         [HttpPut]
