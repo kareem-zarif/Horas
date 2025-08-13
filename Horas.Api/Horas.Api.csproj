@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="CustomFilter\**" />
+    <Compile Remove="Helpers\**" />
     <Content Remove="CustomFilter\**" />
+    <Content Remove="Helpers\**" />
     <EmbeddedResource Remove="CustomFilter\**" />
+    <EmbeddedResource Remove="Helpers\**" />
     <None Remove="CustomFilter\**" />
+    <None Remove="Helpers\**" />
   </ItemGroup>
 
   <ItemGroup>

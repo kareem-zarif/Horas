@@ -72,11 +72,11 @@ namespace Horas.Api.Controllers
         {
             var user = await userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized(new ApiResponse(401));
+            if (user == null) return Unauthorized("Invalid login attempt");
 
             var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
+            if (!result.Succeeded) return Unauthorized("Invalid login attempt");
 
             return new UserDto
             {
@@ -98,14 +98,14 @@ namespace Horas.Api.Controllers
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
-                return BadRequest(new ApiValidationErrorResponse { Errors = errors });
+                var details = errors.Any() ? string.Join(" | ", errors) : "Validation failed";
+                return BadRequest(details);
             }
 
             // Check if email already exists
             if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
             {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse
-                { Errors = new[] { "Email address is in use" } });
+                return BadRequest(new { message = "Email address is in use" });
             }
 
             // Create Customer entity
@@ -121,7 +121,12 @@ namespace Horas.Api.Controllers
             var result = await userManager.CreateAsync(cust, registerDto.Password);
 
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400));
+            {
+                var errorDetails = result.Errors
+                    .Select(e => e.Description)
+                    .ToList();
+                return BadRequest(errorDetails);
+            }
 
             // Assign Customer role
             await userManager.AddToRoleAsync(cust, "Customer");
@@ -146,14 +151,14 @@ namespace Horas.Api.Controllers
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
-                return BadRequest(new ApiValidationErrorResponse { Errors = errors });
+                var details = errors.Any() ? string.Join(" | ", errors) : "Validation failed";
+                return BadRequest(details);
             }
 
             // Check if email already exists
             if (CheckEmailExistsAsync(dto.Email).Result.Value)
             {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse
-                { Errors = new[] { "Email address is in use" } });
+                return BadRequest(new { message = "Email address is in use" });
             }
 
 
@@ -177,7 +182,12 @@ namespace Horas.Api.Controllers
             var result = await userManager.CreateAsync(supp, dto.Password);
 
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400));
+            {
+                var errorDetails = result.Errors
+                    .Select(e => e.Description)
+                    .ToList();
+                return BadRequest(new { errors = errorDetails });
+            }
 
             // Assign Supplier role
             await userManager.AddToRoleAsync(supp, "Supplier");

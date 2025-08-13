@@ -21,7 +21,6 @@ global using Horas.Api.Dtos.SubCategory;
 global using Horas.Api.Dtos.Supplier;
 global using Horas.Api.Dtos.WishList;
 global using Horas.Api.Extensions;
-global using Horas.Api.Helpers;
 global using Horas.Application.Handlers;
 global using Horas.Data;
 global using Horas.Data.DataAccess;
