@@ -8,7 +8,7 @@ namespace Horas.Api.Controllers
     public class ChatGPTController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string OPENAI_API_KEY = "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";
+        private const string OPENAI_API_KEY = "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";
 
 
         // ✅ حطيت الـ Dictionary جوه الكلاس عشان يبقى متاح في الميثود
@@ -37,7 +37,7 @@ namespace Horas.Api.Controllers
                 return Ok(new { answer = presetAnswer });
             }
 
-            var prompt = $"أجب على السؤال التالي بصيغة خدمة عملاء لمتجر إلكتروني. قدم الإجابة أولاً بالعربية، ثم نفس الإجابة بالإنجليزية، بدون حشو أو تكرار:\n\n{question.Question}";
+            var prompt = $"أجب على السؤال التالي بصيغة خدمة عملاء لمتجر إلكتروني.يجب أن تكون الإجابة واضحة وصريحة ومباشرة، بدون أي أسئلة إضافية أو شرح زائد لا تستخدم روابط أو إحالات خارجية إذا لم تكن المعلومة مؤكدة، قدم مدة تقديرية بناءً على المدة المعتادة أجب أولاً بالعربية، ثم في السطر التالي نفس الإجابة بالإنجليزية فقط: \n{question.Question}";
 
             var requestBody = new
             {
