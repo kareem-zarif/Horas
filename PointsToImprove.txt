@@ -3,4 +3,6 @@ Dtos
 
 Filtering 
 -Can filter in memory / in database 
+
+Pagination
 -Can make Pagination for coming Data 
