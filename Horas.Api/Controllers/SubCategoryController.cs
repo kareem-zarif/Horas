@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Horas.Api.Dtos.SubCategory;
-using Horas.Domain;
-using Horas.Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Horas.Api.Controllers
+﻿namespace Horas.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,15 +18,12 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var foundList = await _uow.SubCategoryRepository.GetAllAsync();
+                var foundList = await _uow.SubCategoryRepository.GetAllAsyncInclude();
 
                 if (foundList == null)
                     return NotFound();
 
                 var mapped = _mapper.Map<IEnumerable<SubCategoryResDto>>(foundList);
-
-                if (mapped == null)
-                    return NotFound();
 
                 return Ok(mapped);
             }
@@ -48,15 +39,12 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var found = await _uow.SubCategoryRepository.GetAsync(id);
+                var found = await _uow.SubCategoryRepository.GetAsyncInclude(id);
 
                 if (found == null)
                     return NotFound();
 
                 var mapped = _mapper.Map<SubCategoryResDto>(found);
-
-                if (mapped == null)
-                    return NotFound();
 
                 return Ok(mapped);
             }
@@ -68,90 +56,48 @@ namespace Horas.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(SubCategoryCreateDto requestDto)
+        public async Task<ActionResult> Create([FromForm] SubCategoryCreateDto requestDto)
         {
-            if (requestDto == null)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            try
+            var found = _mapper.Map<SubCategory>(requestDto);
+
+            var mappedGo = await _uow.SubCategoryRepository.CreateAsync(found);
+            int saved = await _uow.Complete();
+            if (saved > 0)
             {
-                var subCategory = _mapper.Map<SubCategory>(requestDto);
-
-                if (subCategory == null)
-                    return BadRequest();
-
-                await _uow.SubCategoryRepository.CreateAsync(subCategory);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<SubCategoryResDto>(subCategory);
-
-                return CreatedAtAction(nameof(GetSubCategories), new { id = subCategory.Id }, mapped);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, SubCategoryUpdateDto requestDto)
-        {
-            if (requestDto == null || id != requestDto.Id)
-                return BadRequest();
-            try
-            {
-                var subCategory = await _uow.SubCategoryRepository.GetAsync(id);
-
-                if (subCategory == null)
-                    return NotFound();
-
-                subCategory.Name = requestDto.Name;
-                subCategory.Description = requestDto.Description;
-                subCategory.CategoryId = requestDto.CategoryId;
-
-                    await _uow.SubCategoryRepository.UpdateAsync(subCategory);
-                await _uow.Complete();
-
-                var mapped = _mapper.Map<SubCategoryResDto>(subCategory);
-
+                var mapped = _mapper.Map<SubCategoryResDto>(found);
                 return Ok(mapped);
             }
-            catch (Exception ex)
+            else
+                return BadRequest();
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] SubCategoryUpdateDto requestDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var old = await _uow.SubCategoryRepository.GetAsyncInclude(requestDto.Id);
+
+            if (old == null)
+                return NotFound();
+
+            var mappedCategory = _mapper.Map<SubCategory>(requestDto);
+
+            var mappedGo = await _uow.SubCategoryRepository.UpdateAsync(mappedCategory);
+
+            int saved = await _uow.Complete();
+            if (saved > 0)
             {
-                return StatusCode(500, ex.Message);
+                var mapped = _mapper.Map<SubCategoryResDto>(mappedGo);
+                return Ok(mapped);
             }
-
-            //==================================================================================
-
-            //if (requestDto == null)
-            //    return BadRequest();
-
-            //if (id != requestDto.Id)
-            //    return BadRequest("Id does not match object Id");
-
-            //try
-            //{
-            //    var SubCategoryFromDb = await _uow.SubCategoryRepository.GetAsync(id);
-
-            //    if (SubCategoryFromDb == null)
-            //        return NotFound();
-
-            //    var subCategory = _mapper.Map<SubCategory>(SubCategoryFromDb);
-
-            //    if (subCategory == null)
-            //        return BadRequest();
-
-            //    await _uow.SubCategoryRepository.UpdateAsync(subCategory);
-            //    await _uow.Complete();
-
-            //    var mapped = _mapper.Map<SubCategoryResDto>(subCategory);
-
-            //    return Ok(mapped);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return StatusCode(500, ex.Message);
-            //}
+            else
+                return BadRequest();
         }
 
 
@@ -160,15 +106,19 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var subCategory = await _uow.SubCategoryRepository.GetAsync(id);
+                var deleted = await _uow.SubCategoryRepository.DeleteAsync(id);
 
-                if (subCategory == null)
+                if (deleted == null)
                     return NotFound();
 
-                await _uow.SubCategoryRepository.DeleteAsync(id);
-
-                await _uow.Complete();
-                return NoContent();
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<SubCategoryResDto>(deleted);
+                    return Ok(mapped);
+                }
+                else
+                    return BadRequest();
             }
             catch (Exception ex)
             {
