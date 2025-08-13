@@ -118,12 +118,19 @@ public class MappingProfile : Profile
 
         #region Customer
 
-        CreateMap<CustomerCreateDto, Customer>().ReverseMap();
-        CreateMap<CustomerUpdateDto, Customer>().ReverseMap();
-        CreateMap<CustomerReadDto, Customer>().ReverseMap();
+        CreateMap<CustomerCreateDto, Customer>()
+    .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+    .ReverseMap();
+        CreateMap<CustomerUpdateDto, Customer>()
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+            .ReverseMap();
+        CreateMap<Customer, CustomerReadDto>().ReverseMap();
         CreateMap<Customer, CustomerResDto>()
             .ForMember(dest => dest.OrdersCount, opt => opt.MapFrom(src => src.Orders != null ? src.Orders.Count : 0))
+            //.ForMember(dest => dest.PersonNotification, opt => opt.MapFrom(src => src.PersonNotifications))
+            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
             .ReverseMap();
+
 
         //CreateMap<CustomerResDto, Customer>()
         //.ForMember(dest => dest.Orders.Count, opt => opt.MapFrom(src => src.OrdersCount)).ReverseMap();
