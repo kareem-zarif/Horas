@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    [Migration("20250813092341_sellerRoleToSupplierRole")]
-    partial class sellerRoleToSupplierRole
+    [Migration("20250813233847_init1")]
+    partial class init1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
