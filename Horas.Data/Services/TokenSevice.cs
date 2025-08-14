@@ -34,17 +34,17 @@ namespace Horas.Data.Services
             // إضافة الـ roles
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            // إضافة معلومة عن اكتمال الـ profile للبائع
-            if (roles.Contains("Seller"))
-            {
-                //claims.Add(new Claim("IsSellerProfileComplete", user.IsSellerProfileComplete.ToString()));
+            //// إضافة معلومة عن اكتمال الـ profile للبائع
+            //if (roles.Contains("Seller"))
+            //{
+            //    //claims.Add(new Claim("IsSellerProfileComplete", user.IsSellerProfileComplete.ToString()));
 
-                //// إضافة معلومات إضافية إذا كان الـ profile مكتمل
-                //if (user.SellerProfile != null)
-                //{
-                //    claims.Add(new Claim("StoreName", user.SellerProfile.StoreName ?? ""));
-                //}
-            }
+            //    //// إضافة معلومات إضافية إذا كان الـ profile مكتمل
+            //    //if (user.SellerProfile != null)
+            //    //{
+            //    //    claims.Add(new Claim("StoreName", user.SellerProfile.StoreName ?? ""));
+            //    //}
+            //}
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -52,14 +52,14 @@ namespace Horas.Data.Services
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
-                SigningCredentials = creds,
+                SigningCredentials = creds, //signutue of token
                 Issuer = _config["Token:Issuer"]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return tokenHandler.WriteToken(token); //  return token as string to frontend and saved in localStorge and sent with request for any auzorized endpoint
         }
     }
 }

@@ -201,6 +201,63 @@ namespace Horas.Api.Controllers
             };
         }
 
+        //[Authorize(Roles = "Admin")]
+        [HttpPost("register/admin")]
+        public async Task<ActionResult<UserDto>> RegisterAdmin([FromBody] AdminRegisterDto registerDto)
+        {
+            // Validate request
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                var details = errors.Any() ? string.Join(" | ", errors) : "Validation failed";
+                return BadRequest(details);
+            }
+
+            // Check if email exists
+            if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
+            {
+                return BadRequest(new { message = "Email address is in use" });
+            }
+
+            // Create Person entity for admin
+            var admin = new Person
+            {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
+                Email = registerDto.Email,
+                UserName = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber
+            };
+
+            // Create the admin user
+            var result = await userManager.CreateAsync(admin, registerDto.Password);
+
+            if (!result.Succeeded)
+            {
+                var errorDetails = result.Errors
+                    .Select(e => e.Description)
+                    .ToList();
+                return BadRequest(errorDetails);
+            }
+
+            // Assign Admin role
+            await userManager.AddToRoleAsync(admin, "Admin");
+
+            // Return the created admin details
+            return new UserDto
+            {
+                DisplayName = $"{admin.FirstName} {admin.LastName}",
+                Token = await tokenService.CreateToken(admin),
+                Email = admin.Email,
+                UserRoleH = string.Join(",", await userManager.GetRolesAsync(admin))
+            };
+        }
+
+
         #region Seller_AdminControl
 
         //[Authorize(Roles = "Admin")]
