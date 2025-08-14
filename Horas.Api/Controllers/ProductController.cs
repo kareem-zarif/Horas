@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.TeamFoundation.Common;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Product = Horas.Domain.Product;
@@ -376,79 +377,79 @@ No explanation, no extra formatting.
         //}
 
 
+        //the one i did
+        //[HttpPut]
+        //public async Task<IActionResult> Update([FromForm] ProductUpdateDto requestDto)
+        //{
+        //    ProductApprovalStatus previousStatus = ProductApprovalStatus.Pending;
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateDto requestDto)
-        {
-            ProductApprovalStatus previousStatus = ProductApprovalStatus.Pending;
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //    var found = await _uow.ProductRepository.GetAsync(requestDto.Id);
+        //    if (found == null)
+        //        return NotFound();
 
-            var found = await _uow.ProductRepository.GetAsync(requestDto.Id);
-            if (found == null)
-                return NotFound();
+        //    _mapper.Map(requestDto, found);
 
-            _mapper.Map(requestDto, found);
+        //    if (requestDto.Images != null && requestDto.Images.Count > 0)
+        //    {
+        //        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-            if (requestDto.Images != null && requestDto.Images.Count > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        //        if (found.ProductPicsPathes.Any())
+        //        {
+        //            var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", found.ProductPicsPathes.First().TrimStart('/'));
+        //            if (System.IO.File.Exists(oldImagePath))
+        //            {
+        //                System.IO.File.Delete(oldImagePath);
+        //            }
 
-                if (found.ProductPicsPathes.Any())
-                {
-                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", found.ProductPicsPathes.First().TrimStart('/'));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
+        //            found.ProductPicsPathes.Clear();
+        //        }
 
-                    found.ProductPicsPathes.Clear();
-                }
+        //        var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(requestDto.Images.FirstOrDefault().FileName)}";
+        //        var newFilePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(requestDto.Images.FirstOrDefault().FileName)}";
-                var newFilePath = Path.Combine(uploadsFolder, uniqueFileName);
+        //        if (!Directory.Exists(uploadsFolder))
+        //            Directory.CreateDirectory(uploadsFolder);
 
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
+        //        using (var stream = new FileStream(newFilePath, FileMode.Create))
+        //        {
+        //            await requestDto.Images.FirstOrDefault()?.CopyToAsync(stream);
+        //        }
 
-                using (var stream = new FileStream(newFilePath, FileMode.Create))
-                {
-                    await requestDto.Images.FirstOrDefault()?.CopyToAsync(stream);
-                }
+        //        found.ProductPicsPathes.Add($"/uploads/{uniqueFileName}");
+        //    }
 
-                found.ProductPicsPathes.Add($"/uploads/{uniqueFileName}");
-            }
+        //    var updated = await _uow.ProductRepository.UpdateAsync(found);
+        //    int saved = await _uow.Complete();
+        //    if (saved > 0)
+        //    {
+        //        if (previousStatus != found.ApprovalStatus)
+        //        {
+        //            string message = null;
 
-            var updated = await _uow.ProductRepository.UpdateAsync(found);
-            int saved = await _uow.Complete();
-            if (saved > 0)
-            {
-                if (previousStatus != found.ApprovalStatus)
-                {
-                    string message = null;
+        //            if (found.ApprovalStatus == ProductApprovalStatus.Approved)
+        //                message = $"Product Approved {found.Name}";
 
-                    if (found.ApprovalStatus == ProductApprovalStatus.Approved)
-                        message = $"Product Approved {found.Name}";
+        //            else if (found.ApprovalStatus == ProductApprovalStatus.Rejected)
+        //                message = $"Product Rejected {found.Name}";
 
-                    else if (found.ApprovalStatus == ProductApprovalStatus.Rejected)
-                        message = $"Product Rejected {found.Name}";
+        //            if (message != null)
+        //            {
+        //                await _madiator.Publish(new ProductChangedEvent(
+        //                    updated.Id,
+        //                    message: message
+        //                    ));
+        //            }
+        //        }
 
-                    if (message != null)
-                    {
-                        await _madiator.Publish(new ProductChangedEvent(
-                            updated.Id,
-                            message: message
-                            ));
-                    }
-                }
-
-                var mapped = _mapper.Map<ProductResDto>(updated);
-                return Ok(mapped);
-            }
-            else
-                return BadRequest();
-        }
+        //        var mapped = _mapper.Map<ProductResDto>(updated);
+        //        return Ok(mapped);
+        //    }
+        //    else
+        //        return BadRequest();
+        //}
 
 
         //[HttpPut]
@@ -471,6 +472,155 @@ No explanation, no extra formatting.
         //        return StatusCode(500, ex.Message);
         //    }
         //}
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] ProductUpdateDto requestDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                // Get the existing product to preserve current status and other properties
+                var found = await _uow.ProductRepository.GetAsync(requestDto.Id);
+                if (found == null)
+                    return NotFound("Product not found");
+
+                // Store the previous status BEFORE updating
+                ProductApprovalStatus previousStatus = found.ApprovalStatus;
+
+                // Only update the fields that are provided in the request
+                // This prevents null reference exceptions during mapping
+                if (!string.IsNullOrEmpty(requestDto.Name))
+                    found.Name = requestDto.Name;
+
+                if (!string.IsNullOrEmpty(requestDto.Description))
+                    found.Description = requestDto.Description;
+
+                if (requestDto.PricePerPiece > 0)
+                    found.PricePerPiece = requestDto.PricePerPiece;
+
+                if (requestDto.PricePer50Piece.HasValue && requestDto.PricePer50Piece > 0)
+                    found.PricePer50Piece = requestDto.PricePer50Piece;
+
+                if (requestDto.PricePer100Piece.HasValue && requestDto.PricePer100Piece > 0)
+                    found.PricePer100Piece = requestDto.PricePer100Piece;
+
+                if (requestDto.NoINStock >= 0)
+                    found.NoINStock = requestDto.NoINStock;
+
+                if (requestDto.MinNumToFactoryOrder > 0)
+                    found.MinNumToFactoryOrder = requestDto.MinNumToFactoryOrder;
+
+                if (requestDto.ApprovalStatus != ProductApprovalStatus.Pending) // Only update if explicitly set
+                    found.ApprovalStatus = requestDto.ApprovalStatus;
+
+                if (requestDto.Shipping > 0)
+                    found.Shipping = requestDto.Shipping;
+
+                if (requestDto.SubCategoryId != Guid.Empty)
+                    found.SubCategoryId = requestDto.SubCategoryId;
+
+                if (requestDto.WarrantyNMonths.HasValue && requestDto.WarrantyNMonths >= 0)
+                    found.WarrantyNMonths = requestDto.WarrantyNMonths;
+
+                // Handle images if provided
+                // Fix for CS1503: Argument 1: cannot convert from 'System.Guid' to 'string?'
+                // The issue is that `requestDto.SubCategoryId` is of type `Guid`, but the code is treating it as a nullable string.
+                // To fix this, we need to ensure that the `SubCategoryId` is converted to a string before assignment.
+
+                if (requestDto.SubCategoryId != Guid.Empty) // Ensure the Guid is not empty
+                    found.SubCategoryId = requestDto.SubCategoryId;
+                if (requestDto.Images != null && requestDto.Images.Count > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                    // Fix for CS1503: Argument 1: cannot convert from 'System.Guid' to 'string?'
+                    // The issue is that `requestDto.SubCategoryId` is of type `Guid`, but the code is treating it as a nullable string.
+                    // To fix this, we need to ensure that the `SubCategoryId` is converted to a string before assignment.
+
+                    if (requestDto.SubCategoryId != Guid.Empty) // Ensure the Guid is not empty
+                        found.SubCategoryId = requestDto.SubCategoryId;
+                    // Delete old images if they exist
+                    if (found.ProductPicsPathes.Any())
+                    {
+                        foreach (var oldImagePath in found.ProductPicsPathes)
+                        {
+                            var fullOldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", oldImagePath.TrimStart('/'));
+                            if (System.IO.File.Exists(fullOldPath))
+                            {
+                                System.IO.File.Delete(fullOldPath);
+                            }
+                        }
+                        found.ProductPicsPathes.Clear();
+                    }
+
+                    // Add new images
+                    foreach (var image in requestDto.Images)
+                    {
+                        if (image != null && image.Length > 0)
+                        {
+                            var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+                            var newFilePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                            if (!Directory.Exists(uploadsFolder))
+                                Directory.CreateDirectory(uploadsFolder);
+
+                            using (var stream = new FileStream(newFilePath, FileMode.Create))
+                            {
+                                await image.CopyToAsync(stream);
+                            }
+
+                            found.ProductPicsPathes.Add($"/uploads/{uniqueFileName}");
+                        }
+                    }
+                }
+
+                // Update the product
+                var updated = await _uow.ProductRepository.UpdateAsync(found);
+                int saved = await _uow.Complete();
+
+                if (saved > 0)
+                {
+                    // Check if approval status changed
+                    if (previousStatus != found.ApprovalStatus)
+                    {
+                        string message = null;
+
+                        if (found.ApprovalStatus == ProductApprovalStatus.Approved)
+                            message = $"Product Approved: {found.Name}";
+                        else if (found.ApprovalStatus == ProductApprovalStatus.Rejected)
+                            message = $"Product Rejected: {found.Name}";
+
+                        if (message != null)
+                        {
+                            await _madiator.Publish(new ProductChangedEvent(
+                                updated.Id,
+                                message: message
+                            ));
+                        }
+                    }
+
+                    var mapped = _mapper.Map<ProductResDto>(updated);
+                    return Ok(mapped);
+                }
+                else
+                    return BadRequest("Failed to save changes");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details for debugging
+                Console.WriteLine($"Error in Product Update: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
 
         [HttpDelete("{id:guid}")]
