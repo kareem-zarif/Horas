@@ -1,6 +1,7 @@
 ﻿namespace Horas.Data.Repos
 {
-    public class BaseRepo<TEntity> : IBaseRepo<TEntity> where TEntity : BaseEnt
+    public class BaseRepo<TEntity> : IBaseRepo<TEntity>
+        where TEntity : class, IBaseEnt
     {
         #region readonly
         //using readonly so that in multi threads , no thread change the instance of connection (so all classes inheits from BaseRepo will use same _dbContext,_dbset )
@@ -54,6 +55,7 @@
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
+            var found = await _dbset.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id);
             var created = await _dbset.AddAsync(entity);
             return created.Entity;
         }
@@ -61,6 +63,8 @@
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
             var old = await FindAsync(entity.Id);
+            if (old == null)
+                throw new Exception("Entity not found");
 
             _dbContext.Entry(old).State = EntityState.Detached; //detach old in dbcontext (database)
 
@@ -123,7 +127,7 @@
         {
             var deleted = await DeleteAsync(id);
 
-            return await DeleteAsync(deleted.Id);
+            return await GetAsyncInclude(deleted.Id);
         }
     }
 }

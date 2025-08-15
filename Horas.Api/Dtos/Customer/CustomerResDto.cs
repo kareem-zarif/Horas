@@ -1,0 +1,33 @@
+﻿namespace Horas.Api.Dtos.Customer
+{
+    public class CustomerResDto
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string? State { get; set; }
+        public string? City { get; set; }
+        public int OrdersCount { get; set; }
+        public List<OrderReadDto> Orders { get; set; }
+        public List<PaymentMethodResDto> PaymentMethods { get; set; }
+
+        public List<MessageResDto> Messages { get; set; }
+
+        public List<ReviewResDto> Reviews { get; set; }
+        public WishListResDto Wishlist { get; set; }
+
+        public CartResDto Cart { get; set; }
+
+        public List<PersonNotificationRespDto> PersonNotification { get; set; }
+        public List<ReportResDto> Reports { get; set; }
+
+        // public PaymentMethodType DefaultPaymentMethodType { get; set; } = PaymentMethodType.Cash;
+
+
+        //public int MessagesCount { get; set; }
+
+
+
+    }
+}
