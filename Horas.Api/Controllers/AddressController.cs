@@ -65,12 +65,17 @@ namespace Horas.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] AddressCreateDto requestDto)
+        public async Task<IActionResult> Create([FromBody] AddressCreateDto requestDto)
         {
 
             if (!ModelState.IsValid)
-                return BadRequest();
+            {
+                Console.WriteLine("ModelState Errors:");
+                foreach (var error in ModelState)
+                    Console.WriteLine($"Field: {error.Key}, Errors: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
 
+                return BadRequest(ModelState);
+            }
 
             var found = _mapper.Map<Address>(requestDto);
 
@@ -98,7 +103,7 @@ namespace Horas.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromForm] AddressUpdateDto requestDto)
+        public async Task<IActionResult> Update([FromBody] AddressUpdateDto requestDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -145,7 +150,7 @@ namespace Horas.Api.Controllers
                 var saved = await _uow.Complete();
                 if (saved > 0)
                 {
-   
+
                     var mapped = _mapper.Map<AddressResDto>(deleted);
                     return Ok(mapped);
                 }

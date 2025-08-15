@@ -174,6 +174,9 @@ namespace Horas.Data.Migrations
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsExist")
                         .HasColumnType("bit");
 
