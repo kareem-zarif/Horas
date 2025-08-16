@@ -3,6 +3,7 @@ using Person = Horas.Domain.Person;
 
 namespace Horas.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -19,7 +20,6 @@ namespace Horas.Api.Controllers
             this.tokenService = tokenService;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
@@ -66,7 +66,7 @@ namespace Horas.Api.Controllers
         //    return BadRequest("Problem updating the cust");
         //}
 
-
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
@@ -86,6 +86,7 @@ namespace Horas.Api.Controllers
             };
         }
 
+        [AllowAnonymous]
         [HttpPost("register/customer")]
         public async Task<ActionResult<UserDto>> Register([FromBody] CustomerRegisterDto registerDto)
         {
@@ -140,6 +141,7 @@ namespace Horas.Api.Controllers
             };
         }
 
+        [AllowAnonymous]
         [HttpPost("register/supplier")]
         public async Task<ActionResult<UserDto>> RegisterSupplier([FromBody] SupplierRegisterDto dto)
         {
@@ -201,7 +203,7 @@ namespace Horas.Api.Controllers
             };
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("register/admin")]
         public async Task<ActionResult<UserDto>> RegisterAdmin([FromBody] AdminRegisterDto registerDto)
         {

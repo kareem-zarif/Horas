@@ -7,7 +7,12 @@
         }
         public async Task<Cart> GetByCustomerIdAsync(Guid custId)
         {
-            var found = await _dbset.Include(x => x.CartItems).FirstOrDefaultAsync(x => x.CustomerId == custId);
+            var found = await _dbset
+                .Include(x => x.CartItems)
+                    .ThenInclude(x => x.Product)
+                    .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.CustomerId == custId);
+
             return found;
         }
 

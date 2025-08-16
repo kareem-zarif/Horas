@@ -26,6 +26,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Reviews != null && src.Reviews.Any()
                 ? src.Reviews.Sum(x => x.Rating) / (src.Reviews.Count) : 0))
             .ForMember(dest => dest.Suppliers, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Supplier.FactoryName)))
+            .ForMember(dest => dest.PricePerPiece, opt => opt.MapFrom(src => src.PricePerPiece))
             .ReverseMap();
 
         #endregion
@@ -90,7 +91,7 @@ public class MappingProfile : Profile
              src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().State : null))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src =>
              src.Addresses != null && src.Addresses.Any() ? src.Addresses.First().City : null))
-            //.ForMember(des => des.Products, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Product)))
+            .ForMember(des => des.Products, opt => opt.MapFrom(src => src.ProductSuppliers.Select(x => x.Product)))
             .ReverseMap();
         #endregion
 

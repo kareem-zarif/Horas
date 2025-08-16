@@ -8,6 +8,8 @@
         public string? PostalCode { get; set; }
         public string? Country { get; set; } = "Egypt";
         public Guid PersonId { get; set; }
+        public bool IsDefault { get; set; } = false;
+
         //nav
         public virtual Person Person { get; set; }
 

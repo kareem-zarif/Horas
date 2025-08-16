@@ -8,7 +8,7 @@ namespace Horas.Api.Controllers
     public class ChatGPTController : ControllerBase
     {
         private readonly HttpClient _httpClient;
-        private const string OPENAI_API_KEY = "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";
+        private const string OPENAI_API_KEY = "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";
 
 
         // ✅ حطيت الـ Dictionary جوه الكلاس عشان يبقى متاح في الميثود
