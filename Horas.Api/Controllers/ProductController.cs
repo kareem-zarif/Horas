@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation.Common;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Product = Horas.Domain.Product;
@@ -153,91 +152,85 @@ namespace Horas.Api.Controllers
             if (!productNames.Any())
                 return NotFound("No products found.");
 
-            // 2. Prepare GPT prompt
-            string prompt = $"""
-You are a smart autocomplete assistant for a multilingual e-commerce platform.
-
-Here is a sample list of product names:
-[{string.Join(", ", productNames.Take(1000))}]
-
-User typed: "{q}"
-
-Return the top 10 most relevant product names from the list above, based on exact match, partial match, typos, and user intent.
-
-ONLY return a JSON array of strings like:
-["Product A", "Product B"]
-No explanation, no extra formatting.
-""";
-
-            // 3. Prepare OpenAI request
+            // 2. Try AI search
             var openAiApiKey = _config["OpenAI:ApiKey"];
-            var requestBody = new
+            if (!string.IsNullOrWhiteSpace(openAiApiKey))
             {
-                model = "mistralai/mistral-7b-instruct",  // Or "gpt-3.5-turbo", "gpt-4o", etc.
-                messages = new[]
+                try
                 {
-            new { role = "system", content = "You are a helpful assistant." },
-            new { role = "user", content = prompt }
-        },
-                temperature = 0.2
-            };
+                    string prompt = $"""
+                You are a smart autocomplete assistant for a multilingual e-commerce platform.
+                Here is a sample list of product names:
+                [{string.Join(", ", productNames.Take(1000))}]
+                User typed: "{q}"
+                Return the top 10 most relevant product names from the list above, based on exact match, partial match, typos, and user intent.
+                ONLY return a JSON array of strings like:
+                ["Product A", "Product B"]
+                No explanation, no extra formatting.
+                """;
 
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAiApiKey);
+                    var requestBody = new
+                    {
+                        model = "mistralai/mistral-7b-instruct",
+                        messages = new[]
+                        {
+                    new { role = "system", content = "You are a helpful assistant." },
+                    new { role = "user", content = prompt }
+                },
+                        temperature = 0.2
+                    };
 
-            var response = await client.PostAsync(
-                "https://openrouter.ai/api/v1/chat/completions",
-                new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
-            );
+                    using var client = new HttpClient();
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAiApiKey);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                return StatusCode((int)response.StatusCode, $"OpenAI error: {error}");
-            }
+                    var response = await client.PostAsync(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
+                    );
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        using var doc = JsonDocument.Parse(responseContent);
+                        var completion = doc.RootElement
+                            .GetProperty("choices")[0]
+                            .GetProperty("message")
+                            .GetProperty("content")
+                            .GetString();
 
-            // 4. Parse result
-            using var doc = JsonDocument.Parse(responseContent);
-            var completion = doc.RootElement
-                .GetProperty("choices")[0]
-                .GetProperty("message")
-                .GetProperty("content")
-                .GetString();
+                        var cleaned = completion
+                            .Trim()
+                            .Trim('`')
+                            .Replace("json", "", StringComparison.OrdinalIgnoreCase)
+                            .Trim();
 
-            try
-            {
-                // Clean result
-                var cleaned = completion
-                    .Trim()
-                    .Trim('`')
-                    .Replace("json", "", StringComparison.OrdinalIgnoreCase)
-                    .Trim();
+                        var json = JsonDocument.Parse(cleaned);
 
-                var json = JsonDocument.Parse(cleaned);
+                        if (json.RootElement.ValueKind == JsonValueKind.Array)
+                        {
+                            var suggestions = json.RootElement
+                                .EnumerateArray()
+                                .Select(x => x.GetString())
+                                .Where(x => !string.IsNullOrWhiteSpace(x))
+                                .ToList();
 
-                if (json.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    var suggestions = json.RootElement
-                        .EnumerateArray()
-                        .Select(x => x.GetString())
-                        .Where(x => !string.IsNullOrWhiteSpace(x))
-                        .ToList();
-
-                    return Ok(suggestions);
+                            return Ok(suggestions);
+                        }
+                    }
                 }
-
-                throw new Exception("Invalid JSON array format.");
-            }
-            catch
-            {
-                return Ok(new
+                catch
                 {
-                    raw = completion,
-                    fullResponse = responseContent
-                });
+                    // Log error if needed, then fallback
+                }
             }
+
+            // 3. Fallback to database search
+            var dbSuggestions = productNames
+                .Where(p => p.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .Take(10)
+                .ToList();
+
+            return Ok(dbSuggestions);
         }
 
 
