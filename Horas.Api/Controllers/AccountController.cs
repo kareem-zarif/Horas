@@ -259,6 +259,34 @@ namespace Horas.Api.Controllers
             };
         }
 
+        [Authorize(Roles = "Admin")] // optional: only Admins can see Admins
+        [HttpGet("admins")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllAdmins()
+        {
+            try
+            {
+                var admins = await userManager.GetUsersInRoleAsync("Admin");
+
+                if (admins == null || !admins.Any())
+                    return NotFound(new { message = "No admins found." });
+
+                var adminDtos = admins.Select(a => new UserDto
+                {
+                    Email = a.Email,
+                    DisplayName = $"{a.FirstName} {a.LastName}",
+                    UserRoleH = "Admin"
+                    // Token is usually not needed here, unless you want to generate it for each admin
+                }).ToList();
+
+                return Ok(adminDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
 
         #region Seller_AdminControl
 

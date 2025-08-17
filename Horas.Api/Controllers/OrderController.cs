@@ -45,6 +45,35 @@ namespace Horas.Api.Controllers
             }
         }
 
+        //[HttpGet("admin/all")]
+        //[Authorize(Roles = "Admin")] // Assuming you have role-based authorization
+        //public async Task<ActionResult> GetAllOrdersForAdmin()
+        //{
+        //    try
+        //    {
+        //        // Check if user has admin role
+        //        if (!User.IsInRole("Admin"))
+        //            return Forbid();
+
+        //        var foundList = await _uow.OrderRepository.GetAllAsyncInclude();
+
+        //        if (foundList == null || !foundList.Any())
+        //            return NotFound();
+
+        //        var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
+
+        //        if (mapped == null)
+        //            return NotFound();
+
+        //        return Ok(mapped);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
+        //    }
+        //}
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(Guid id)
         {
