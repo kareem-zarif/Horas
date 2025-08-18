@@ -7,6 +7,7 @@
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Body).HasMaxLength(100).IsRequired();
+            builder.Property(x => x.SenderType).IsRequired().HasMaxLength(50);
             builder.HasQueryFilter(x => x.IsExist);
 
             builder.HasOne(x => x.Customer)
