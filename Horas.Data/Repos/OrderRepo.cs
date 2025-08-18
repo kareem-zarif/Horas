@@ -1,3 +1,4 @@
+
 namespace Horas.Data.Repos
 
 {
@@ -36,6 +37,11 @@ namespace Horas.Data.Repos
             return await query.FirstOrDefaultAsync(filter);
 
 
+        }
+
+        public Task<IEnumerable<Order>> GetAllAsync(Func<IQueryable<Order>, IQueryable<Order>> include = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }
