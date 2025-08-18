@@ -34,6 +34,25 @@
             }
         }
 
+        [HttpGet("bySupplier/{supplierId}")]
+        public async Task<ActionResult> GetBySupplierId(Guid supplierId)
+        {
+            try
+            {
+                var orderItems = await _uow.OrderItemRepository.GetAllBySupplierIdAsync(supplierId);
+
+                if (orderItems == null || !orderItems.Any())
+                    return NotFound();
+
+                var mapped = _mapper.Map<IList<OrderItemResDto>>(orderItems);
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
+            }
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)

@@ -23,21 +23,25 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (!Guid.TryParse(userIdClaim, out var userId))
-                    return Unauthorized();
+                //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                //if (!Guid.TryParse(userIdClaim, out var userId))
+                //    return Unauthorized();
 
-                var foundList = await _uow.OrderRepository.GetAllAsyncInclude(x => x.CustomerId == userId);
+                if (User.IsInRole("Customer") || User.IsInRole("Supplier") || User.IsInRole("Admin"))
+                {
+                    var foundList = await _uow.OrderRepository.GetAllAsyncInclude();
 
-                if (foundList == null || !foundList.Any())
-                    return NotFound();
+                    if (foundList == null || !foundList.Any())
+                        return NotFound();
 
-                var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
+                    var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
 
-                if (mapped == null)
-                    return NotFound();
+                    if (mapped == null)
+                        return NotFound();
 
-                return Ok(mapped);
+                    return Ok(mapped);
+                }
+                return Unauthorized();
             }
             catch (Exception ex)
             {
