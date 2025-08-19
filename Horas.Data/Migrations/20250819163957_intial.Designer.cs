@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    [Migration("20250815140912_intial ")]
+    [Migration("20250819163957_intial")]
     partial class intial
     {
         /// <inheritdoc />
