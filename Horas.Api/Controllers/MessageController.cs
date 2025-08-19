@@ -46,7 +46,7 @@ namespace Horas.Api.Controllers
         }
 
         [HttpGet("bysupplier/{supplierId}")]
-        public async Task<ActionResult> GetWishListByCustomerId(Guid supplierId)
+        public async Task<ActionResult> GetAllMessageByCustomerId(Guid supplierId)
         {
             try
             {
