@@ -45,6 +45,25 @@ namespace Horas.Api.Controllers
             }
         }
 
+        [HttpGet("bysupplier/{supplierId}")]
+        public async Task<ActionResult> GetAllMessageByCustomerId(Guid supplierId)
+        {
+            try
+            {
+                var found = await _uow.MessageRepository.GetBySupplierId(supplierId);
+
+                if (found == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<List<MessageReadDto>>(found);
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
+            }
+        }
         [HttpGet("{id}")]
 
         public async Task<IActionResult> GetMessage(Guid id)

@@ -286,7 +286,28 @@ namespace Horas.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("removeAdmin")]
+        public async Task<IActionResult> RemoveAdmin([FromQuery] string email)
+        {
+            var admin = await userManager.FindByEmailAsync(email);
+            if (admin == null)
+                return NotFound(new { message = "Admin not found." });
 
+            var roles = await userManager.GetRolesAsync(admin);
+            if (!roles.Contains("Admin"))
+                return BadRequest(new { message = "User is not an admin." });
+
+            var removeRoleResult = await userManager.RemoveFromRoleAsync(admin, "Admin");
+            if (!removeRoleResult.Succeeded)
+                return StatusCode(500, new { errors = removeRoleResult.Errors.Select(e => e.Description) });
+
+            var deleteResult = await userManager.DeleteAsync(admin);
+            if (!deleteResult.Succeeded)
+                return StatusCode(500, new { errors = deleteResult.Errors.Select(e => e.Description) });
+
+            return Ok(new { message = "Admin removed successfully." });
+        }
 
         #region Seller_AdminControl
 
