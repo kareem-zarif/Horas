@@ -17,6 +17,11 @@
                 .WithMany(x => x.Orders)
                 .HasForeignKey(x => x.PaymentMethodId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(x=>x.OrderItems)
+                .WithOne(x=>x.Order)
+                .HasForeignKey(x=> x.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
