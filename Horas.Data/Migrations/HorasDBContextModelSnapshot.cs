@@ -581,6 +581,9 @@ namespace Horas.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
@@ -589,6 +592,8 @@ namespace Horas.Data.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("OrderItems");
                 });
@@ -1247,9 +1252,17 @@ namespace Horas.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Horas.Domain.Supplier", "Supplier")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Horas.Domain.OrderStatusHistory", b =>
@@ -1422,6 +1435,8 @@ namespace Horas.Data.Migrations
             modelBuilder.Entity("Horas.Domain.Supplier", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("OrderItems");
 
                     b.Navigation("ProductSuppliers");
 

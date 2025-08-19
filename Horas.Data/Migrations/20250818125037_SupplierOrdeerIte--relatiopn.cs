@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Horas.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class init1 : Migration
+    public partial class SupplierOrdeerIterelatiopn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -561,6 +561,7 @@ namespace Horas.Data.Migrations
                     IsSample = table.Column<bool>(type: "bit", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsExist = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -570,6 +571,12 @@ namespace Horas.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_AspNetUsers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
@@ -755,6 +762,11 @@ namespace Horas.Data.Migrations
                 name: "IX_OrderItems_ProductId",
                 table: "OrderItems",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_SupplierId",
+                table: "OrderItems",
+                column: "SupplierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",

@@ -14,6 +14,7 @@
         public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; } = new HashSet<ProductSupplier>();
         public virtual ICollection<Message> Messages { get; set; } = new HashSet<Message>();
         public virtual ICollection<Report> Reports { get; set; } = new HashSet<Report>();
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
 
     }
 }

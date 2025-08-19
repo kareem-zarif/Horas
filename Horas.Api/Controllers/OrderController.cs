@@ -23,21 +23,25 @@ namespace Horas.Api.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (!Guid.TryParse(userIdClaim, out var userId))
-                    return Unauthorized();
+                //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                //if (!Guid.TryParse(userIdClaim, out var userId))
+                //    return Unauthorized();
 
-                var foundList = await _uow.OrderRepository.GetAllAsyncInclude(x => x.CustomerId == userId);
+                if (User.IsInRole("Customer") || User.IsInRole("Supplier") || User.IsInRole("Admin"))
+                {
+                    var foundList = await _uow.OrderRepository.GetAllAsyncInclude();
 
-                if (foundList == null || !foundList.Any())
-                    return NotFound();
+                    if (foundList == null || !foundList.Any())
+                        return NotFound();
 
-                var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
+                    var mapped = _mapper.Map<IEnumerable<OrderResDto>>(foundList);
 
-                if (mapped == null)
-                    return NotFound();
+                    if (mapped == null)
+                        return NotFound();
 
-                return Ok(mapped);
+                    return Ok(mapped);
+                }
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -129,82 +133,82 @@ namespace Horas.Api.Controllers
         //    }
         //}
 
-        [HttpGet("supplier/{supplierId}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> GetOrdersBySupplier(Guid supplierId)
-        {
-            try
-            {
-                if (!User.IsInRole("Admin"))
-                    return Forbid();
+        //[HttpGet("supplier/{supplierId}")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<ActionResult> GetOrdersBySupplier(Guid supplierId)
+        //{
+        //    try
+        //    {
+        //        if (!User.IsInRole("Admin"))
+        //            return Forbid();
 
-                var allOrders = await _uow.OrderRepository.GetAllAsync(
-                    query => query
-                        .Include(o => o.OrderItems)
-                        .ThenInclude(oi => oi.Product)
-                        .ThenInclude(p => p.ProductSuppliers)
-                );
+        //        var allOrders = await _uow.OrderRepository.GetAllAsync(
+        //            query => query
+        //                .Include(o => o.OrderItems)
+        //                .ThenInclude(oi => oi.Product)
+        //                .ThenInclude(p => p.ProductSuppliers)
+        //        );
 
-                var supplierOrders = allOrders.Where(order =>
-                    order.OrderItems.Any(item =>
-                        item.Product != null &&
-                        item.Product.ProductSuppliers.Any(ps => ps.SupplierId == supplierId)
-                    )
-                ).ToList();
+        //        var supplierOrders = allOrders.Where(order =>
+        //            order.OrderItems.Any(item =>
+        //                item.Product != null &&
+        //                item.Product.ProductSuppliers.Any(ps => ps.SupplierId == supplierId)
+        //            )
+        //        ).ToList();
 
-                if (!supplierOrders.Any())
-                    return NotFound($"No orders found for supplier {supplierId}");
+        //        if (!supplierOrders.Any())
+        //            return NotFound($"No orders found for supplier {supplierId}");
 
-                var mapped = _mapper.Map<IEnumerable<OrderResDto>>(supplierOrders);
+        //        var mapped = _mapper.Map<IEnumerable<OrderResDto>>(supplierOrders);
 
-                return Ok(mapped);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
-            }
-        }
+        //        return Ok(mapped);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
+        //    }
+        //}
 
-        [HttpGet("seller/orders")]
-        //[Authorize(Roles = "Supplier")] // Allow sellers to access their own orders
-        public async Task<ActionResult> GetSellerOrders()
-        {
-            try
-            {
-                // Get the current seller ID from th
-                //var sellerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var sellerIdClaim = User.FindFirst("SupplierId")?.Value;
-                if (!Guid.TryParse(sellerIdClaim, out var sellerId))
-                    return Unauthorized();
+        //[HttpGet("seller/orders")]
+        ////[Authorize(Roles = "Supplier")] // Allow sellers to access their own orders
+        //public async Task<ActionResult> GetSellerOrders()
+        //{
+        //    try
+        //    {
+        //        // Get the current seller ID from th
+        //        //var sellerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //        var sellerIdClaim = User.FindFirst("SupplierId")?.Value;
+        //        if (!Guid.TryParse(sellerIdClaim, out var sellerId))
+        //            return Unauthorized();
 
-                // Get all orders with their items and products
-                var allOrders = await _uow.OrderRepository.GetAllAsync(
-                    query => query
-                        .Include(o => o.OrderItems)
-                        .ThenInclude(oi => oi.Product)
-                        .ThenInclude(p => p.ProductSuppliers)
-                        .AsSplitQuery()
-                );
+        //        // Get all orders with their items and products
+        //        var allOrders = await _uow.OrderRepository.GetAllAsync(
+        //            query => query
+        //                .Include(o => o.OrderItems)
+        //                .ThenInclude(oi => oi.Product)
+        //                .ThenInclude(p => p.ProductSuppliers)
+        //                .AsSplitQuery()
+        //        );
 
-                // Filter orders that contain products from this supplier
-                var sellerOrders = allOrders.Where(order =>
-                    order.OrderItems.Any(item =>
-                        item.Product != null &&
-                        item.Product.ProductSuppliers.Any(ps => ps.SupplierId == sellerId)
-                    )
-                ).ToList();
+        //        // Filter orders that contain products from this supplier
+        //        var sellerOrders = allOrders.Where(order =>
+        //            order.OrderItems.Any(item =>
+        //                item.Product != null &&
+        //                item.Product.ProductSuppliers.Any(ps => ps.SupplierId == sellerId)
+        //            )
+        //        ).ToList();
 
-                if (!sellerOrders.Any())
-                    return NotFound($"No orders found for seller {sellerId}");
+        //        if (!sellerOrders.Any())
+        //            return NotFound($"No orders found for seller {sellerId}");
 
-                var mapped = _mapper.Map<List<OrderResDto>>(sellerOrders);
-                return Ok(mapped);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
-            }
-        }
+        //        var mapped = _mapper.Map<List<OrderResDto>>(sellerOrders);
+        //        return Ok(mapped);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $" {ex.Message} :: {ex.InnerException}");
+        //    }
+        //}
 
         //[HttpGet("supplier/{supplierId}")]
         //[Authorize(Roles = "Admin")]

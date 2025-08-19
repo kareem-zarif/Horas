@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Horas.Data.Migrations
 {
     [DbContext(typeof(HorasDBContext))]
-    [Migration("20250813233847_init1")]
-    partial class init1
+    [Migration("20250818125037_SupplierOrdeerIte--relatiopn")]
+    partial class SupplierOrdeerIterelatiopn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -584,6 +584,9 @@ namespace Horas.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
@@ -592,6 +595,8 @@ namespace Horas.Data.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("OrderItems");
                 });
@@ -1250,9 +1255,17 @@ namespace Horas.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Horas.Domain.Supplier", "Supplier")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Horas.Domain.OrderStatusHistory", b =>
@@ -1425,6 +1438,8 @@ namespace Horas.Data.Migrations
             modelBuilder.Entity("Horas.Domain.Supplier", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("OrderItems");
 
                     b.Navigation("ProductSuppliers");
 
