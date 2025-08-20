@@ -1,6 +1,6 @@
 ﻿namespace Horas.Domain
 {
-    public class Message : BaseEnt
+    public class Message : IBaseEnt
     {
         public string Body { get; set; }
         [ForeignKey("Customer")]
@@ -10,5 +10,13 @@
         //nav
         public virtual Customer Customer { get; set; }
         public virtual Supplier Supplier { get; set; }
+        public string SenderType { get; set; }
+        //IbaseEnt
+        public Guid Id { get; set; }
+        public bool IsExist { get; set; } = true;
+        public Guid? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }

@@ -1,0 +1,181 @@
+﻿using Horas.Api.Hubs;
+using Microsoft.AspNetCore.SignalR;
+
+namespace Horas.Api.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MessageController : ControllerBase
+    {
+        private readonly IUOW _uow;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+        private readonly IHubContext<ChatHub> _hub;
+        public MessageController(IUOW uow, IMapper mapper, IMediator mediator, IHubContext<ChatHub> hub)
+        {
+            _uow = uow;
+            _mapper = mapper;
+            _mediator = mediator;
+            _hub = hub;
+        }
+
+
+        [HttpGet]
+
+        public async Task<IActionResult> GetAll()
+        {
+
+            try
+            {
+
+                var foundList = await _uow.MessageRepository.GetAllAsyncInclude();
+                if (foundList == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<IEnumerable<MessageReadDto>>(foundList);
+
+                if (mapped == null)
+                    return NotFound();
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("bysupplier/{supplierId}")]
+        public async Task<ActionResult> GetAllMessageByCustomerId(Guid supplierId)
+        {
+            try
+            {
+                var found = await _uow.MessageRepository.GetBySupplierId(supplierId);
+
+                if (found == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<List<MessageReadDto>>(found);
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"{ex.Message} :: {ex.InnerException}");
+            }
+        }
+        [HttpGet("{id}")]
+
+        public async Task<IActionResult> GetMessage(Guid id)
+        {
+            try
+            {
+                var found = await _uow.MessageRepository.GetAsyncInclude(id);
+                if (found == null)
+                    return NotFound();
+
+                var mapped = _mapper.Map<MessageReadDto>(found);
+
+                if (mapped == null)
+                    return NotFound();
+
+                return Ok(mapped);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> create([FromBody] MessageCreateDto _CreateDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            var Message = _mapper.Map<Message>(_CreateDto);
+            var created = await _uow.MessageRepository.CreateAsync(Message);
+            int saved = await _uow.Complete();
+
+            if (saved > 0)
+            {
+
+
+
+                if (_CreateDto.Sendto.ToLower() == "customer" && Message.CustomerId.HasValue)
+                {
+                    await _mediator.Publish(new NotificationEvent(
+                        message: $"You received a new message from the supplier  .",
+                        personId: Message.CustomerId.Value
+                    ));
+                }
+                else if (_CreateDto.Sendto.ToLower() == "supplier" && Message.SupplierId.HasValue)
+                {
+                    await _mediator.Publish(new NotificationEvent(
+                        message: $"You received a new message from the customer ",
+                        personId: Message.SupplierId.Value
+                    ));
+                }
+
+
+                var mapped = _mapper.Map<MessageReadDto>(created);
+                var groupName = ChatHub.GetGroupName(
+                   created.CustomerId ?? Guid.Empty,
+                   created.SupplierId ?? Guid.Empty
+                                 );
+
+                // بعت الرسالة للجروب بس
+                await _hub.Clients.Group(groupName).SendAsync("ReceiveMessage", mapped);
+                return Ok(mapped);
+            }
+            else
+                return BadRequest();
+
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(MessageUpdateDto requestDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var mappedGo = _mapper.Map<Message>(requestDto);
+            var updated = await _uow.MessageRepository.UpdateAsync(mappedGo);
+            int saved = await _uow.Complete();
+            if (saved > 0)
+            {
+                var mappedCome = _mapper.Map<MessageReadDto>(updated);
+                // 👇 Real-time update
+                await _hub.Clients.All.SendAsync("MessageUpdated", mappedCome);
+                return Ok(mappedCome);
+            }
+            else return BadRequest();
+
+
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                var deleted = await _uow.MessageRepository.DeleteAsync(id);
+                int saved = await _uow.Complete();
+                if (saved > 0)
+                {
+                    var mapped = _mapper.Map<MessageReadDto>(deleted);
+
+                    // 👇 Real-time deletion
+                    await _hub.Clients.All.SendAsync("MessageDeleted", mapped);
+                    return Ok(mapped);
+                }
+                else return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+    }
+}
